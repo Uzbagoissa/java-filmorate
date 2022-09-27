@@ -14,6 +14,7 @@ import java.util.HashSet;
 public class FilmController {
     private final HashSet<Film> films = new HashSet<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+    private int filmID = 1;
 
     @GetMapping()
     public HashSet<Film> getFilms() {
@@ -38,7 +39,9 @@ public class FilmController {
             log.error("Продолжительность фильма должна быть положительна!, {}", film);
             throw new InvalidDurationException("Продолжительность фильма должна быть положительна!");
         } else {
+            film.setId(filmID);
             films.add(film);
+            filmID = filmID + 1;
             log.info("Добавлен новый фильм, {}", film);
             return film;
         }
@@ -60,11 +63,14 @@ public class FilmController {
             throw new InvalidDurationException("Продолжительность фильма должна быть положительна!");
         } else if(films.contains(film)){
             films.remove(film);
+            film.setId(film.getId());
             films.add(film);
             log.info("Фильм обновлен - , {}", film);
             return film;
         } else {
+            film.setId(filmID);
             films.add(film);
+            filmID = filmID + 1;
             log.info("Добавлен новый фильм, {}", film);
             return film;
         }

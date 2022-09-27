@@ -17,6 +17,7 @@ import java.util.HashSet;
 public class UserController {
     private final HashSet<User> users = new HashSet<>();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private int userID = 1;
 
     @GetMapping()
     public HashSet<User> getUsers() {
@@ -39,11 +40,15 @@ public class UserController {
             throw new InvalidBirthdayException("Дата рождения не может быть в будущем!");
         } else if (user.getName().trim().equals("")){
             user.setName(user.getLogin());
+            user.setId(userID);
             users.add(user);
+            userID = userID + 1;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         } else {
+            user.setId(userID);
             users.add(user);
+            userID = userID + 1;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         }
@@ -65,6 +70,7 @@ public class UserController {
             if (user.getName().trim().equals("")){
                 user.setName(user.getLogin());
             }
+            user.setId(user.getId());
             users.add(user);
             log.info("Пользователь обновлен - , {}", user);
             return user;
@@ -72,7 +78,9 @@ public class UserController {
             if (user.getName().trim().equals("")){
                 user.setName(user.getLogin());
             }
+            user.setId(userID);
             users.add(user);
+            userID = userID + 1;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         }
