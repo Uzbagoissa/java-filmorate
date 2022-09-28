@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,8 +10,8 @@ import java.util.Objects;
 public class User {
     private int id;
     private String email;
-    private String login;
     private String name;
+    private String login;
     private LocalDate birthday;
 
     @Override
