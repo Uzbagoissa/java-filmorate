@@ -19,6 +19,7 @@ public class UserController {
     @GetMapping()
     public HashSet<User> getUsers() {
         return users;
+        //
     }
 
     @PostMapping()
