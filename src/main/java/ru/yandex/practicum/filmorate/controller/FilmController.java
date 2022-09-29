@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class FilmController {
         if (films.containsKey(film.getId())){
             log.error("Фильм уже был добавлен!, {}", film);
             throw new FilmAlreadyExistException("Фильм уже был добавлен!");
-        } else if (film.getName().trim().equals("")){
+        } else if (film.getName().isEmpty()){
             log.error("Название не может быть пустым!, {}", film);
             throw new InvalidFilmNameException("Название не может быть пустым!");
         } else if (film.getDescription().length() > 200){

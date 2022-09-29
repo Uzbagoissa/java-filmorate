@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public class UserController {
         } else if (user.getBirthday().isAfter(LocalDate.now())){
             log.error("Дата рождения не может быть в будущем!, {}", user);
             throw new InvalidBirthdayException("Дата рождения не может быть в будущем!");
-        } else if (user.getName().trim().equals("")){
+        } else if (user.getName() == null){
             user.setName(user.getLogin());
             user.setId(userID);
             users.put(userID, user);
