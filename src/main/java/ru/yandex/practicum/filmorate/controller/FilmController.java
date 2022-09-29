@@ -34,7 +34,7 @@ public class FilmController {
         if (films.containsKey(film.getId())){
             log.error("Фильм уже был добавлен!, {}", film);
             throw new FilmAlreadyExistException("Фильм уже был добавлен!");
-        } else if (film.getName().isEmpty()){
+        } else if (film.getName().trim().equals("")){
             log.error("Название не может быть пустым!, {}", film);
             throw new InvalidFilmNameException("Название не может быть пустым!");
         } else if (film.getDescription().length() > 200){
