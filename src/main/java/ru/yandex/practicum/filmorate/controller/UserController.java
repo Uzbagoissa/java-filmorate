@@ -7,24 +7,29 @@ import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final HashSet<User> users = new HashSet<>();
+    private final HashMap<Integer, User> users = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private int userID = 1;
 
     @GetMapping()
-    public HashSet<User> getUsers() {
-        return users;
-        //
+    public ArrayList<User> getUsers() {
+        ArrayList<User> usersValue = new ArrayList<>();
+        for (User value : users.values()) {
+            usersValue.add(value);
+        }
+        return usersValue;
     }
 
     @PostMapping()
     public User createUser(@RequestBody User user) throws UserAlreadyExistException, InvalidEmailException, InvalidLoginException, InvalidBirthdayException {
-        if (users.contains(user)){
+        if (users.containsKey(user.getId())){
             log.error("Такой пользователь уже существует!, {}", user);
             throw new UserAlreadyExistException("Такой пользователь уже существует!");
         } else if (user.getEmail().trim().equals("") || !user.getEmail().contains("@")){
@@ -39,13 +44,13 @@ public class UserController {
         } else if (user.getName().trim().equals("")){
             user.setName(user.getLogin());
             user.setId(userID);
-            users.add(user);
+            users.put(userID, user);
             userID = userID + 1;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         } else {
             user.setId(userID);
-            users.add(user);
+            users.put(userID, user);
             userID = userID + 1;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
@@ -54,16 +59,15 @@ public class UserController {
 
     @PutMapping()
     public User renewUser(@RequestBody User user) throws InvalidUserException {
-        if (!users.contains(user)){
+        if (!users.containsKey(user.getId())){
             log.error("Такого пользователя не существует!, {}", user);
             throw new InvalidUserException("Такого пользователя не существует!");
         } else {
-            users.remove(user);
             if (user.getName().trim().equals("")){
                 user.setName(user.getLogin());
             }
             user.setId(user.getId());
-            users.add(user);
+            users.put(user.getId(), user);
             log.info("Пользователь обновлен - , {}", user);
             return user;
         }

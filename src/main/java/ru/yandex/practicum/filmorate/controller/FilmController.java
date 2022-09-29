@@ -5,25 +5,32 @@ import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final HashSet<Film> films = new HashSet<>();
+    private final HashMap<Integer, Film> films = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     private int filmID = 1;
 
     @GetMapping()
-    public HashSet<Film> getFilms() {
-        return films;
+    public ArrayList<Film> getFilms() {
+        ArrayList<Film> filmsValue = new ArrayList<>();
+        for (Film value : films.values()) {
+            filmsValue.add(value);
+        }
+        return filmsValue;
     }
 
     @PostMapping()
     public Film addFilm(@RequestBody Film film) throws FilmAlreadyExistException, InvalidFilmNameException, InvalidDescriptionException, InvalidReleaseDateException, InvalidDurationException {
-        if (films.contains(film)){
+        if (films.containsKey(film.getId())){
             log.error("Фильм уже был добавлен!, {}", film);
             throw new FilmAlreadyExistException("Фильм уже был добавлен!");
         } else if (film.getName().trim().equals("")){
@@ -40,7 +47,7 @@ public class FilmController {
             throw new InvalidDurationException("Продолжительность фильма должна быть положительна!");
         } else {
             film.setId(filmID);
-            films.add(film);
+            films.put(filmID, film);
             filmID = filmID + 1;
             log.info("Добавлен новый фильм, {}", film);
             return film;
@@ -49,13 +56,13 @@ public class FilmController {
 
     @PutMapping()
     public Film renewFilm(@RequestBody Film film) throws InvalidFilmException {
-        if (!films.contains(film)){
+        if (!films.containsKey(film.getId())){
             log.error("Такого фильма не существует!, {}", film);
             throw new InvalidFilmException("Такого фильма не существует!");
         } else {
             films.remove(film);
             film.setId(film.getId());
-            films.add(film);
+            films.put(filmID, film);
             log.info("Фильм обновлен - , {}", film);
             return film;
         }
