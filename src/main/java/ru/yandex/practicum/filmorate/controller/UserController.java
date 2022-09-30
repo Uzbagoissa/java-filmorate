@@ -6,12 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/users")
@@ -30,19 +27,19 @@ public class UserController {
     }
 
     @PostMapping()
-    public User createUser(@RequestBody User user) throws UserAlreadyExistException, InvalidEmailException, InvalidLoginException, InvalidBirthdayException {
+    public User createUser(@RequestBody User user) throws ValidationException {
         if (users.containsKey(user.getId())){
             log.error("Такой пользователь уже существует!, {}", user);
-            throw new UserAlreadyExistException("Такой пользователь уже существует!");
-        } else if (user.getEmail().trim().equals("") || !user.getEmail().contains("@")){
+            throw new ValidationException("Такой пользователь уже существует!");
+        } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")){
             log.error("Электронная почта не может быть пустой и должна содержать символ - @, {}", user);
-            throw new InvalidEmailException("Электронная почта не может быть пустой и должна содержать символ - @");
+            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ - @");
         } else if (user.getLogin().equals("") || user.getLogin().contains(" ")){
             log.error("Логин не может быть пустым и содержать пробелы!, {}", user);
-            throw new InvalidLoginException("Логин не может быть пустым и содержать пробелы!");
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы!");
         } else if (user.getBirthday().isAfter(LocalDate.now())){
             log.error("Дата рождения не может быть в будущем!, {}", user);
-            throw new InvalidBirthdayException("Дата рождения не может быть в будущем!");
+            throw new ValidationException("Дата рождения не может быть в будущем!");
         } else if (user.getName() == null){
             user.setName(user.getLogin());
             user.setId(userID);
@@ -60,10 +57,10 @@ public class UserController {
     }
 
     @PutMapping()
-    public User renewUser(@RequestBody User user) throws InvalidUserException {
+    public User renewUser(@RequestBody User user) throws ValidationException {
         if (!users.containsKey(user.getId())){
             log.error("Такого пользователя не существует!, {}", user);
-            throw new InvalidUserException("Такого пользователя не существует!");
+            throw new ValidationException("Такого пользователя не существует!");
         } else {
             if (user.getName().trim().equals("")){
                 user.setName(user.getLogin());

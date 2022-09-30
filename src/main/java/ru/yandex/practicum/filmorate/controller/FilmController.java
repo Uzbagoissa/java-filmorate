@@ -5,13 +5,10 @@ import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/films")
@@ -30,22 +27,22 @@ public class FilmController {
     }
 
     @PostMapping()
-    public Film addFilm(@RequestBody Film film) throws FilmAlreadyExistException, InvalidFilmNameException, InvalidDescriptionException, InvalidReleaseDateException, InvalidDurationException {
+    public Film addFilm(@RequestBody Film film) throws ValidationException {
         if (films.containsKey(film.getId())){
             log.error("Фильм уже был добавлен!, {}", film);
-            throw new FilmAlreadyExistException("Фильм уже был добавлен!");
-        } else if (film.getName().trim().equals("")){
+            throw new ValidationException("Фильм уже был добавлен!");
+        } else if (film.getName().isBlank()){
             log.error("Название не может быть пустым!, {}", film);
-            throw new InvalidFilmNameException("Название не может быть пустым!");
+            throw new ValidationException("Название не может быть пустым!");
         } else if (film.getDescription().length() > 200){
             log.error("Максимальная длина описания — 200 символов!, {}", film);
-            throw new InvalidDescriptionException("Максимальная длина описания — 200 символов!");
+            throw new ValidationException("Максимальная длина описания — 200 символов!");
         } else if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))){
             log.error("Дата релиза не должна быть раньше 28 декабря 1895!, {}", film);
-            throw new InvalidReleaseDateException("Дата релиза не должна быть раньше 28 декабря 1895!");
+            throw new ValidationException("Дата релиза не должна быть раньше 28 декабря 1895!");
         } else if (film.getDuration() <= 0){
             log.error("Продолжительность фильма должна быть положительна!, {}", film);
-            throw new InvalidDurationException("Продолжительность фильма должна быть положительна!");
+            throw new ValidationException("Продолжительность фильма должна быть положительна!");
         } else {
             film.setId(filmID);
             films.put(filmID, film);
@@ -56,14 +53,13 @@ public class FilmController {
     }
 
     @PutMapping()
-    public Film renewFilm(@RequestBody Film film) throws InvalidFilmException {
+    public Film renewFilm(@RequestBody Film film) throws ValidationException {
         if (!films.containsKey(film.getId())){
             log.error("Такого фильма не существует!, {}", film);
-            throw new InvalidFilmException("Такого фильма не существует!");
+            throw new ValidationException("Такого фильма не существует!");
         } else {
-            films.remove(film);
             film.setId(film.getId());
-            films.put(filmID, film);
+            films.put(film.getId(), film);
             log.info("Фильм обновлен - , {}", film);
             return film;
         }

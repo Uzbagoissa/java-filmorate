@@ -22,12 +22,12 @@ class UserControllerTests {
     }
 
     @Test
-    void getUserAlreadyExistException() throws UserAlreadyExistException, InvalidLoginException, InvalidBirthdayException, InvalidEmailException {
+    void getUserAlreadyExistException() throws ValidationException {
         user.setBirthday(LocalDate.parse("2000-01-12"));
         user.setLogin("VACE");
         user.setEmail("vace@yandex.ru");
         userController.createUser(user);
-        assertThrows(UserAlreadyExistException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -35,7 +35,7 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2000-01-12"));
         user.setLogin("VACE");
         user.setEmail("");
-        assertThrows(InvalidEmailException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -43,7 +43,7 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2000-01-12"));
         user.setLogin("  ");
         user.setEmail("vace@yandex.ru");
-        assertThrows(InvalidLoginException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
@@ -51,12 +51,12 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2200-01-12"));
         user.setLogin("VACE");
         user.setEmail("vace@yandex.ru");
-        assertThrows(InvalidBirthdayException.class, () -> userController.createUser(user));
+        assertThrows(ValidationException.class, () -> userController.createUser(user));
     }
 
     @Test
     void getInvalidUserException() {
-        assertThrows(InvalidUserException.class, () -> userController.renewUser(user));
+        assertThrows(ValidationException.class, () -> userController.renewUser(user));
     }
 
 }
