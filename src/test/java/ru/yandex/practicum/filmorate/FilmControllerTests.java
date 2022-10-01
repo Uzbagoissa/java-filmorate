@@ -32,6 +32,7 @@ class FilmControllerTests {
         film.setName(" ");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
         assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        //
     }
 
     @Test
