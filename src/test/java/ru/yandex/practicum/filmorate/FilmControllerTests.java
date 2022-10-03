@@ -66,7 +66,7 @@ class FilmControllerTests {
 
     @Test
     void getInvalidFilmException() {
-        assertThrows(ValidationException.class, () -> filmController.renewFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.updateFilm(film));
     }
 
 }

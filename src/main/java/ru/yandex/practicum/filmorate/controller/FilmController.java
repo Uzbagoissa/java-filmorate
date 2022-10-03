@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequestMapping("/films")
@@ -18,16 +19,12 @@ public class FilmController {
     private int filmID = 1;
 
     @GetMapping()
-    public ArrayList<Film> getFilms() {
-        ArrayList<Film> filmsValue = new ArrayList<>();
-        for (Film value : films.values()) {
-            filmsValue.add(value);
-        }
-        return filmsValue;
+    public List<Film> getFilms() {
+        return new ArrayList<>(films.values());
     }
 
     @PostMapping()
-    public Film addFilm(@RequestBody Film film) throws ValidationException {
+    public Film addFilm(@RequestBody Film film){
         if (films.containsKey(film.getId())){
             log.error("Фильм уже был добавлен!, {}", film);
             throw new ValidationException("Фильм уже был добавлен!");
@@ -46,14 +43,14 @@ public class FilmController {
         } else {
             film.setId(filmID);
             films.put(filmID, film);
-            filmID = filmID + 1;
+            filmID++;
             log.info("Добавлен новый фильм, {}", film);
             return film;
         }
     }
 
     @PutMapping()
-    public Film renewFilm(@RequestBody Film film) throws ValidationException {
+    public Film updateFilm(@RequestBody Film film) {
         if (!films.containsKey(film.getId())){
             log.error("Такого фильма не существует!, {}", film);
             throw new ValidationException("Такого фильма не существует!");

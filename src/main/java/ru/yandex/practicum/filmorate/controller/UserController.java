@@ -19,15 +19,11 @@ public class UserController {
 
     @GetMapping()
     public ArrayList<User> getUsers() {
-        ArrayList<User> usersValue = new ArrayList<>();
-        for (User value : users.values()) {
-            usersValue.add(value);
-        }
-        return usersValue;
+        return new ArrayList<>(users.values());
     }
 
     @PostMapping()
-    public User createUser(@RequestBody User user) throws ValidationException {
+    public User createUser(@RequestBody User user) {
         if (users.containsKey(user.getId())){
             log.error("Такой пользователь уже существует!, {}", user);
             throw new ValidationException("Такой пользователь уже существует!");
@@ -44,20 +40,20 @@ public class UserController {
             user.setName(user.getLogin());
             user.setId(userID);
             users.put(userID, user);
-            userID = userID + 1;
+            userID++;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         } else {
             user.setId(userID);
             users.put(userID, user);
-            userID = userID + 1;
+            userID++;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         }
     }
 
     @PutMapping()
-    public User renewUser(@RequestBody User user) throws ValidationException {
+    public User updateUser(@RequestBody User user) {
         if (!users.containsKey(user.getId())){
             log.error("Такого пользователя не существует!, {}", user);
             throw new ValidationException("Такого пользователя не существует!");

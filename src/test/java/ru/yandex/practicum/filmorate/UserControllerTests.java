@@ -56,7 +56,7 @@ class UserControllerTests {
 
     @Test
     void getInvalidUserException() {
-        assertThrows(ValidationException.class, () -> userController.renewUser(user));
+        assertThrows(ValidationException.class, () -> userController.updateUser(user));
     }
 
 }
