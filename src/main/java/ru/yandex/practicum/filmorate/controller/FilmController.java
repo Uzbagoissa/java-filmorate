@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    FilmValidateService filmValidService = new FilmValidateService();
+    FilmValidateService filmValidService = new FilmValidateService();//
     public static final HashMap<Integer, Film> FILMS = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     private int filmID = 1;
