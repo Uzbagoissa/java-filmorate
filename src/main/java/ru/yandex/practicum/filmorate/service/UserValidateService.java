@@ -1,25 +1,23 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public class UserValidateService {
-    private static final Logger log = LoggerFactory.getLogger(UserValidateService.class);
 
-    public void checkPUTUserValidate(User user) {
-        if (!UserController.USERS.containsKey(user.getId())){
+    public void checkPUTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
+        if (!users.containsKey(user.getId())){
             log.error("Такого пользователя не существует!, {}", user);
             throw new ValidationException("Такого пользователя не существует!");
         }
     }
 
-    public void checkPOSTUserValidate(User user) {
-        if (UserController.USERS.containsKey(user.getId())) {
+    public void checkPOSTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
+        if (users.containsKey(user.getId())) {
             log.error("Такой пользователь уже существует!, {}", user);
             throw new ValidationException("Такой пользователь уже существует!");
         } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {

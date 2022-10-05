@@ -12,29 +12,29 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    UserValidateService userValidateService = new UserValidateService();
-    public static final HashMap<Integer, User> USERS = new HashMap<>();
+    private UserValidateService userValidateService = new UserValidateService();
+    private static final HashMap<Integer, User> users = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private int userID = 1;
 
     @GetMapping()
     public ArrayList<User> getAllUsers() {
-        return new ArrayList<>(USERS.values());
+        return new ArrayList<>(users.values());
     }
 
     @PostMapping()
     public User createUser(@RequestBody User user) {
-        userValidateService.checkPOSTUserValidate(user);
+        userValidateService.checkPOSTUserValidate(log, users, user);
         if (user.getName() == null) {
             user.setName(user.getLogin());
             user.setId(userID);
-            USERS.put(userID, user);
+            users.put(userID, user);
             userID++;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
         } else {
             user.setId(userID);
-            USERS.put(userID, user);
+            users.put(userID, user);
             userID++;
             log.info("Добавлен новый пользователь, {}", user);
             return user;
@@ -43,12 +43,12 @@ public class UserController {
 
     @PutMapping()
     public User updateUser(@RequestBody User user) {
-        userValidateService.checkPUTUserValidate(user);
+        userValidateService.checkPUTUserValidate(log, users, user);
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
         user.setId(user.getId());
-        USERS.put(user.getId(), user);
+        users.put(user.getId(), user);
         log.info("Пользователь обновлен - , {}", user);
         return user;
     }

@@ -1,25 +1,23 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 
 public class FilmValidateService {
-    private static final Logger log = LoggerFactory.getLogger(FilmValidateService.class);
 
-    public void checkPUTFilmValidate(Film film) {
-        if (!FilmController.FILMS.containsKey(film.getId())) {
+    public void checkPUTFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
+        if (!films.containsKey(film.getId())) {
             log.error("Такого фильма не существует!, {}", film);
             throw new ValidationException("Такого фильма не существует!");
         }
     }
 
-    public void checkPOSTFilmValidate(Film film) {
-        if (FilmController.FILMS.containsKey(film.getId())) {
+    public void checkPOSTFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
+        if (films.containsKey(film.getId())) {
             log.error("Фильм уже был добавлен!, {}", film);
             throw new ValidationException("Фильм уже был добавлен!");
         } else if (film.getName().isBlank()) {

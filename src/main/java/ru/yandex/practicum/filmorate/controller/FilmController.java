@@ -13,21 +13,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    FilmValidateService filmValidService = new FilmValidateService();//
-    public static final HashMap<Integer, Film> FILMS = new HashMap<>();
+    private FilmValidateService filmValidService = new FilmValidateService();
+    private static final HashMap<Integer, Film> films = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     private int filmID = 1;
 
     @GetMapping()
     public List<Film> getAllFilms() {
-        return new ArrayList<>(FILMS.values());
+        return new ArrayList<>(films.values());
     }
 
     @PostMapping()
     public Film addFilm(@RequestBody Film film) {
-        filmValidService.checkPOSTFilmValidate(film);
+        filmValidService.checkPOSTFilmValidate(log, films, film);
         film.setId(filmID);
-        FILMS.put(filmID, film);
+        films.put(filmID, film);
         filmID++;
         log.info("Добавлен новый фильм, {}", film);
         return film;
@@ -35,9 +35,9 @@ public class FilmController {
 
     @PutMapping()
     public Film updateFilm(@RequestBody Film film) {
-        filmValidService.checkPUTFilmValidate(film);
+        filmValidService.checkPUTFilmValidate(log, films, film);
         film.setId(film.getId());
-        FILMS.put(film.getId(), film);
+        films.put(film.getId(), film);
         log.info("Фильм обновлен - , {}", film);
         return film;
     }
