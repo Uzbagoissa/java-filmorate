@@ -16,13 +16,13 @@ class FilmControllerTests {
     FilmController filmController = new FilmController();
 
     @Test
-    void getFilmAlreadyExistException() throws InvalidFilmNameException, InvalidDurationException, InvalidDescriptionException, FilmAlreadyExistException, InvalidReleaseDateException {
+    void getFilmAlreadyExistException() throws ValidationException {
         film.setDuration(2);
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
         filmController.addFilm(film);
-        assertThrows(FilmAlreadyExistException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
     }
 
     @Test
@@ -31,7 +31,8 @@ class FilmControllerTests {
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName(" ");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        assertThrows(InvalidFilmNameException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        //
     }
 
     @Test
@@ -42,7 +43,7 @@ class FilmControllerTests {
                 "ваьпвдапвдаьпждвапждвапждважпдважпжвапжвдапвапжвапдвапвэапвэапэвапэвапэвдаэпждваэп");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        assertThrows(InvalidDescriptionException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
     }
 
     @Test
@@ -51,7 +52,7 @@ class FilmControllerTests {
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(1200, 10, 14));
-        assertThrows(InvalidReleaseDateException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
     }
 
     @Test
@@ -60,12 +61,12 @@ class FilmControllerTests {
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        assertThrows(InvalidDurationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
     }
 
     @Test
     void getInvalidFilmException() {
-        assertThrows(InvalidFilmException.class, () -> filmController.renewFilm(film));
+        assertThrows(ValidationException.class, () -> filmController.updateFilm(film));
     }
 
 }
