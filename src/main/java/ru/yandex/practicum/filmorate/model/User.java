@@ -3,6 +3,9 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -13,4 +16,5 @@ public class User {
     private String name;
     private String login;
     private LocalDate birthday;
+    private List<Integer> friends = new ArrayList<>();
 }
