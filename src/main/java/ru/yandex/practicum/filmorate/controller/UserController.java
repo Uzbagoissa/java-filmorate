@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserValidateService;//
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashMap;//
 
 @RestController
 @RequestMapping("/users")
