@@ -19,6 +19,17 @@ public class InMemoryFilmStorage implements FilmStorage{
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @Override
+    public Film getFilm(Integer id) {
+        filmValidService.checkFilmValidate(log, films, id);
+        return films.get(id);
+    }
+
+    @Override
+    public HashMap<Integer, Film> getFilms() {
+        return films;
+    }
+
+    @Override
     public List<Film> getAllFilms() {
         return new ArrayList<>(films.values());
     }

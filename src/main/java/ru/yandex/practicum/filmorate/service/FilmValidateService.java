@@ -1,18 +1,34 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 
 public class FilmValidateService {
 
+    public void checkFilmValidateElse(FilmStorage filmStorage, Integer id) {
+        if (!filmStorage.getFilms().containsKey(id)){
+            throw new NotFoundException("Такого фильма не существует!");
+        }
+    }
+
+    public void checkFilmValidate(Logger log, HashMap<Integer, Film> films, Integer id) {
+        if (!films.containsKey(id)){
+            log.error("Такого фильма не существует!, {}", id);
+            throw new NotFoundException("Такого фильма не существует!");
+        }
+    }
+
     public void checkPUTFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
         if (!films.containsKey(film.getId())) {
             log.error("Такого фильма не существует!, {}", film);
-            throw new ValidationException("Такого фильма не существует!");
+            throw new NotFoundException("Такого фильма не существует!");
         }
     }
 

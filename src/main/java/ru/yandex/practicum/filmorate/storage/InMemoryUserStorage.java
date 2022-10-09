@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserValidateService;
 
@@ -13,13 +14,19 @@ import java.util.HashMap;
 @Component
 public class InMemoryUserStorage implements UserStorage{
     private UserValidateService userValidateService = new UserValidateService();
-    private final HashMap<Integer, User> users = new HashMap<>();
+    private static final HashMap<Integer, User> users = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private int userID = 1;
 
     @Override
     public HashMap<Integer, User> getUsers() {
         return users;
+    }
+
+    @Override
+    public User getUser(Integer id) {
+        userValidateService.checkUserValidate(log, users, id);
+        return users.get(id);
     }
 
     @Override

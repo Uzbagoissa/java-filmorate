@@ -1,18 +1,33 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 
 public class UserValidateService {
 
+    public void checkUserValidateElse(UserStorage userStorage, Integer id) {
+        if (!userStorage.getUsers().containsKey(id)) {
+            throw new NotFoundException("Такого пользователя не существует!");
+        }
+    }
+
+    public void checkUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
+        if (!users.containsKey(id)){
+            log.error("Такого пользователя не существует!, {}", id);
+            throw new NotFoundException("Такого пользователя не существует!");
+        }
+    }
+
     public void checkPUTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
         if (!users.containsKey(user.getId())){
             log.error("Такого пользователя не существует!, {}", user);
-            throw new ValidationException("Такого пользователя не существует!");
+            throw new NotFoundException("Такого пользователя не существует!");
         }
     }
 
