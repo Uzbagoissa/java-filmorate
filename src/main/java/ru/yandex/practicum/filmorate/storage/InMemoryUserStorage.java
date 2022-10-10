@@ -37,7 +37,7 @@ public class InMemoryUserStorage implements UserStorage{
     @Override
     public User createUser(User user) {
         userValidateService.checkCreateUserValidate(log, users, user);
-        if (user.getName() == null) {
+        if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
             user.setId(userID);
             users.put(userID, user);
