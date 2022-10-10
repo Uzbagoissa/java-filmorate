@@ -20,7 +20,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film getFilm(Integer id) {
-        filmValidService.checkFilmValidate(log, films, id);
+        filmValidService.checkGetFilmValidate(log, films, id);
         return films.get(id);
     }
 
@@ -36,7 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film addFilm(Film film) {
-        filmValidService.checkPOSTFilmValidate(log, films, film);
+        filmValidService.checkAddFilmValidate(log, films, film);
         film.setId(filmID);
         films.put(filmID, film);
         filmID++;
@@ -46,7 +46,7 @@ public class InMemoryFilmStorage implements FilmStorage{
 
     @Override
     public Film updateFilm(Film film) {
-        filmValidService.checkPUTFilmValidate(log, films, film);
+        filmValidService.checkUpdateFilmValidate(log, films, film);
         film.setId(film.getId());
         films.put(film.getId(), film);
         log.info("Фильм обновлен - , {}", film);

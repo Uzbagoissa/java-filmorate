@@ -25,7 +25,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User getUser(Integer id) {
-        userValidateService.checkUserValidate(log, users, id);
+        userValidateService.checkGetUserValidate(log, users, id);
         return users.get(id);
     }
 
@@ -36,7 +36,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User createUser(User user) {
-        userValidateService.checkPOSTUserValidate(log, users, user);
+        userValidateService.checkCreateUserValidate(log, users, user);
         if (user.getName() == null) {
             user.setName(user.getLogin());
             user.setId(userID);
@@ -55,7 +55,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User updateUser(User user) {
-        userValidateService.checkPUTUserValidate(log, users, user);
+        userValidateService.checkUpdateUserValidate(log, users, user);
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }

@@ -12,27 +12,39 @@ import java.util.HashMap;
 
 public class FilmValidateService {
 
-    public void checkFilmValidateElse(FilmStorage filmStorage, Integer id) {
+    public void checkRemoveLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {
+        if (!filmStorage.getFilms().get(id).getLikes().contains(userId)){
+            throw new NotFoundException("Этот пользователь не ставил лайк этому фильму");
+        }
+    }
+
+    public void checkAddLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {
+        if (filmStorage.getFilms().get(id).getLikes().contains(userId)){
+            throw new NotFoundException("Лайк этого пользователя уже есть у фильма");
+        }
+    }
+
+    public void checkFilmValidate(FilmStorage filmStorage, Integer id) {
         if (!filmStorage.getFilms().containsKey(id)){
             throw new NotFoundException("Такого фильма не существует!");
         }
     }
 
-    public void checkFilmValidate(Logger log, HashMap<Integer, Film> films, Integer id) {
+    public void checkGetFilmValidate(Logger log, HashMap<Integer, Film> films, Integer id) {
         if (!films.containsKey(id)){
             log.error("Такого фильма не существует!, {}", id);
             throw new NotFoundException("Такого фильма не существует!");
         }
     }
 
-    public void checkPUTFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
+    public void checkUpdateFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
         if (!films.containsKey(film.getId())) {
             log.error("Такого фильма не существует!, {}", film);
             throw new NotFoundException("Такого фильма не существует!");
         }
     }
 
-    public void checkPOSTFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
+    public void checkAddFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
         if (films.containsKey(film.getId())) {
             log.error("Фильм уже был добавлен!, {}", film);
             throw new ValidationException("Фильм уже был добавлен!");

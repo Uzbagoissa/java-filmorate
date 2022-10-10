@@ -30,21 +30,23 @@ public class FilmService {
     }
 
     public Film addLike (Integer id, Integer userId) {
-        filmValidService.checkFilmValidateElse(filmStorage, id);
-        userValidateService.checkUserValidateElse(userStorage, id);
+        filmValidService.checkFilmValidate(filmStorage, id);
+        userValidateService.checkUserValidate(userStorage, id);
+        filmValidService.checkAddLikeValidate(filmStorage, id, userId);
         filmStorage.getFilms().get(id).getLikes().add(userId);
         return filmStorage.getFilms().get(id);
     }
 
     public Film removeLike (Integer id, Integer userId) {
-        filmValidService.checkFilmValidateElse(filmStorage, id);
-        userValidateService.checkUserValidateElse(userStorage, id);
+        filmValidService.checkFilmValidate(filmStorage, id);
+        userValidateService.checkUserValidate(userStorage, id);
+        filmValidService.checkRemoveLikeValidate(filmStorage, id, userId);
         filmStorage.getFilms().get(id).getLikes().remove(userId);
         return filmStorage.getFilms().get(id);
     }
 
     private int compare(Film f0, Film f1) {
-        int result = Integer.compare(f0.getLikes().size(), f1.getLikes().size());
+        int result = Integer.compare(f1.getLikes().size(), f0.getLikes().size());
         return result;
     }
 }

@@ -11,27 +11,39 @@ import java.util.HashMap;
 
 public class UserValidateService {
 
-    public void checkUserValidateElse(UserStorage userStorage, Integer id) {
+    public void checkRemoveFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {
+        if (!userStorage.getUsers().get(id).getFriends().contains(friendId)) {
+            throw new ValidationException("Этого пользователя уже нет в друзьях");
+        }
+    }
+
+    public void checkAddFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {
+        if (userStorage.getUsers().get(id).getFriends().contains(friendId)) {
+            throw new ValidationException("Этот пользователь уже есть в друзьях");
+        }
+    }
+
+    public void checkUserValidate(UserStorage userStorage, Integer id) {
         if (!userStorage.getUsers().containsKey(id)) {
             throw new NotFoundException("Такого пользователя не существует!");
         }
     }
 
-    public void checkUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
+    public void checkGetUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
         if (!users.containsKey(id)){
             log.error("Такого пользователя не существует!, {}", id);
             throw new NotFoundException("Такого пользователя не существует!");
         }
     }
 
-    public void checkPUTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
+    public void checkUpdateUserValidate(Logger log, HashMap<Integer, User> users, User user) {
         if (!users.containsKey(user.getId())){
             log.error("Такого пользователя не существует!, {}", user);
             throw new NotFoundException("Такого пользователя не существует!");
         }
     }
 
-    public void checkPOSTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
+    public void checkCreateUserValidate(Logger log, HashMap<Integer, User> users, User user) {
         if (users.containsKey(user.getId())) {
             log.error("Такой пользователь уже существует!, {}", user);
             throw new ValidationException("Такой пользователь уже существует!");
