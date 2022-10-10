@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserValidateService;
 
@@ -25,7 +24,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User getUser(Integer id) {
-        userValidateService.checkGetUserValidate(log, users, id);
+        userValidateService.checkUserValidate(log, users, id);
         return users.get(id);
     }
 
@@ -55,7 +54,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User updateUser(User user) {
-        userValidateService.checkUpdateUserValidate(log, users, user);
+        userValidateService.checkUserValidate(log, users, user.getId());
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }

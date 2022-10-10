@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.time.LocalDate;
@@ -14,32 +13,19 @@ public class FilmValidateService {
 
     public void checkRemoveLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {
         if (!filmStorage.getFilms().get(id).getLikes().contains(userId)){
-            throw new NotFoundException("Этот пользователь не ставил лайк этому фильму");
+            throw new ValidationException("Этот пользователь не ставил лайк этому фильму");
         }
     }
 
     public void checkAddLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {
         if (filmStorage.getFilms().get(id).getLikes().contains(userId)){
-            throw new NotFoundException("Лайк этого пользователя уже есть у фильма");
+            throw new ValidationException("Лайк этого пользователя уже есть у фильма");
         }
     }
 
-    public void checkFilmValidate(FilmStorage filmStorage, Integer id) {
-        if (!filmStorage.getFilms().containsKey(id)){
-            throw new NotFoundException("Такого фильма не существует!");
-        }
-    }
-
-    public void checkGetFilmValidate(Logger log, HashMap<Integer, Film> films, Integer id) {
+    public void checkFilmValidate(Logger log, HashMap<Integer, Film> films, Integer id) {
         if (!films.containsKey(id)){
             log.error("Такого фильма не существует!, {}", id);
-            throw new NotFoundException("Такого фильма не существует!");
-        }
-    }
-
-    public void checkUpdateFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
-        if (!films.containsKey(film.getId())) {
-            log.error("Такого фильма не существует!, {}", film);
             throw new NotFoundException("Такого фильма не существует!");
         }
     }

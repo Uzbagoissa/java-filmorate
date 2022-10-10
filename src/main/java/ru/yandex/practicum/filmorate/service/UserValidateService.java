@@ -23,22 +23,9 @@ public class UserValidateService {
         }
     }
 
-    public void checkUserValidate(UserStorage userStorage, Integer id) {
-        if (!userStorage.getUsers().containsKey(id)) {
-            throw new NotFoundException("Такого пользователя не существует!");
-        }
-    }
-
-    public void checkGetUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
+    public void checkUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
         if (!users.containsKey(id)){
             log.error("Такого пользователя не существует!, {}", id);
-            throw new NotFoundException("Такого пользователя не существует!");
-        }
-    }
-
-    public void checkUpdateUserValidate(Logger log, HashMap<Integer, User> users, User user) {
-        if (!users.containsKey(user.getId())){
-            log.error("Такого пользователя не существует!, {}", user);
             throw new NotFoundException("Такого пользователя не существует!");
         }
     }

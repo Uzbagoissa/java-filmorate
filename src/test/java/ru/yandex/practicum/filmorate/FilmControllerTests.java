@@ -2,11 +2,9 @@ package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
 
@@ -15,18 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class FilmControllerTests {
     Film film = new Film();
-    FilmStorage filmStorage;
-    FilmService filmService;
-    FilmController filmController = new FilmController(filmStorage, filmService);
+    InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage();
 
-    /*@Test
+    @Test
     void getFilmAlreadyExistException() throws ValidationException {
         film.setDuration(2);
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        filmController.addFilm(film);
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        inMemoryFilmStorage.addFilm(film);
+        assertThrows(ValidationException.class, () -> inMemoryFilmStorage.addFilm(film));
     }
 
     @Test
@@ -35,7 +31,7 @@ class FilmControllerTests {
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName(" ");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> inMemoryFilmStorage.addFilm(film));
         //
     }
 
@@ -47,7 +43,7 @@ class FilmControllerTests {
                 "ваьпвдапвдаьпждвапждвапждважпдважпжвапжвдапвапжвапдвапвэапвэапэвапэвапэвдаэпждваэп");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> inMemoryFilmStorage.addFilm(film));
     }
 
     @Test
@@ -56,7 +52,7 @@ class FilmControllerTests {
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(1200, 10, 14));
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> inMemoryFilmStorage.addFilm(film));
     }
 
     @Test
@@ -65,12 +61,12 @@ class FilmControllerTests {
         film.setDescription("Бла бла бла про то, как все вечно в этой жизни");
         film.setName("Интерстеллар");
         film.setReleaseDate(LocalDate.of(2011, 10, 14));
-        assertThrows(ValidationException.class, () -> filmController.addFilm(film));
+        assertThrows(ValidationException.class, () -> inMemoryFilmStorage.addFilm(film));
     }
 
     @Test
     void getInvalidFilmException() {
-        assertThrows(ValidationException.class, () -> filmController.updateFilm(film));
-    }*/
+        assertThrows(NotFoundException.class, () -> inMemoryFilmStorage.updateFilm(film));
+    }
 
 }
