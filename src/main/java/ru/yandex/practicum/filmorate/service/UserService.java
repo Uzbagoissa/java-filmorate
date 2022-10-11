@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.interfaces.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserStorage userStorage;
-    private final UserValidateService userValidateService = new UserValidateService();
+    private final UserValidateService userValidateService;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(UserStorage userStorage, UserValidateService userValidateService) {
         this.userStorage = userStorage;
+        this.userValidateService = userValidateService;
     }
 
     public List<User> getAllFriends(Integer id) {

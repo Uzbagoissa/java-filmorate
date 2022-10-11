@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserValidateService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
@@ -14,7 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class UserControllerTests {
     User user = new User();
-    InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
+    UserValidateService userValidateService = new UserValidateService();
+    InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage(userValidateService);
 
     @BeforeEach
     public void beforeEach() {

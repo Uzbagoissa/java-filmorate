@@ -1,14 +1,16 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.interfaces.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 
+@Service
 public class FilmValidateService {
 
     public void checkRemoveLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {

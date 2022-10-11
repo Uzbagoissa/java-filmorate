@@ -2,8 +2,12 @@ package ru.yandex.practicum.filmorate.storage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
+import ru.yandex.practicum.filmorate.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.interfaces.UserStorage;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmValidateService;
 
@@ -11,12 +15,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Component
-public class InMemoryFilmStorage implements FilmStorage{
+@Service
+public class InMemoryFilmStorage implements FilmStorage {
+    private final FilmValidateService filmValidService;
     private static final HashMap<Integer, Film> films = new HashMap<>();
     private int filmID = 1;
-    private FilmValidateService filmValidService = new FilmValidateService();
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+
+    @Autowired
+    public InMemoryFilmStorage(FilmValidateService filmValidService) {
+        this.filmValidService = filmValidService;
+    }
 
     @Override
     public Film getFilm(Integer id) {

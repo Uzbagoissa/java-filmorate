@@ -1,14 +1,16 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.interfaces.UserStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 
+@Service
 public class UserValidateService {
 
     public void checkRemoveFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {

@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.interfaces.FilmStorage;
+import ru.yandex.practicum.filmorate.interfaces.UserStorage;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,14 +17,16 @@ import java.util.stream.Collectors;
 public class FilmService implements Comparator<Film> {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
-    private final FilmValidateService filmValidService = new FilmValidateService();
-    private final UserValidateService userValidateService = new UserValidateService();
+    private final FilmValidateService filmValidService;
+    private final UserValidateService userValidateService;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage, FilmValidateService filmValidService, UserValidateService userValidateService) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.filmValidService = filmValidService;
+        this.userValidateService = userValidateService;
     }
 
     public List<Film> getMostPopularFilms (Integer count) {
