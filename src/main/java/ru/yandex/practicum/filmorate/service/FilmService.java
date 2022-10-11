@@ -9,11 +9,12 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class FilmService {
+public class FilmService implements Comparator<Film> {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final FilmValidateService filmValidService = new FilmValidateService();
@@ -49,7 +50,8 @@ public class FilmService {
         return filmStorage.getFilms().get(id);
     }
 
-    private int compare(Film f0, Film f1) {
+    @Override
+    public int compare(Film f0, Film f1) {
         int result = Integer.compare(f1.getLikes().size(), f0.getLikes().size());
         return result;
     }
