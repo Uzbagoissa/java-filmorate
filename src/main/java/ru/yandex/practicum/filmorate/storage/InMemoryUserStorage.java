@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 @Service
 public class InMemoryUserStorage implements UserStorage {
-    private UserValidateService userValidateService;
+    private final UserValidateService userValidateService;
     private static final HashMap<Integer, User> users = new HashMap<>();
     private int userID = 1;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
