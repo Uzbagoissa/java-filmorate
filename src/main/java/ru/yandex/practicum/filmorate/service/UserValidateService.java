@@ -1,22 +1,38 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.interfaces.UserStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 
+@Service
 public class UserValidateService {
 
-    public void checkPUTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
-        if (!users.containsKey(user.getId())){
-            log.error("Такого пользователя не существует!, {}", user);
-            throw new ValidationException("Такого пользователя не существует!");
+    public void checkRemoveFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {
+        if (!userStorage.getUsers().get(id).getFriends().contains(friendId)) {
+            throw new ValidationException("Этого пользователя уже нет в друзьях");
         }
     }
 
-    public void checkPOSTUserValidate(Logger log, HashMap<Integer, User> users, User user) {
+    public void checkAddFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {
+        if (userStorage.getUsers().get(id).getFriends().contains(friendId)) {
+            throw new ValidationException("Этот пользователь уже есть в друзьях");
+        }
+    }
+
+    public void checkUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
+        if (!users.containsKey(id)){
+            log.error("Такого пользователя не существует!, {}", id);
+            throw new NotFoundException("Такого пользователя не существует!");
+        }
+    }
+
+    public void checkCreateUserValidate(Logger log, HashMap<Integer, User> users, User user) {
         if (users.containsKey(user.getId())) {
             log.error("Такой пользователь уже существует!, {}", user);
             throw new ValidationException("Такой пользователь уже существует!");
