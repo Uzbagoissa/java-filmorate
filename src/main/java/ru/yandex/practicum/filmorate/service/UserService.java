@@ -46,7 +46,7 @@ public class UserService {
     public User addFriend(Integer id, Integer friendId) {
         userValidateService.checkUserValidate(log, userStorage.getUsers(), id);
         userValidateService.checkUserValidate(log, userStorage.getUsers(), friendId);
-        userValidateService.checkAddFriendValidate(userStorage, id, friendId);
+        userValidateService.checkAddFriendValidate(log, userStorage, id, friendId);
         userStorage.getUsers().get(id).getFriends().add(friendId);
         userStorage.getUsers().get(friendId).getFriends().add(id);
         return userStorage.getUsers().get(id);
@@ -55,7 +55,7 @@ public class UserService {
     public User removeFriend(Integer id, Integer friendId) {
         userValidateService.checkUserValidate(log, userStorage.getUsers(), id);
         userValidateService.checkUserValidate(log, userStorage.getUsers(), friendId);
-        userValidateService.checkRemoveFriendValidate(userStorage, id, friendId);
+        userValidateService.checkRemoveFriendValidate(log, userStorage, id, friendId);
         userStorage.getUsers().get(id).getFriends().remove(friendId);
         userStorage.getUsers().get(friendId).getFriends().remove(id);
         return userStorage.getUsers().get(id);

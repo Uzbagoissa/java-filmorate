@@ -13,14 +13,16 @@ import java.util.HashMap;
 @Service
 public class UserValidateService {
 
-    public void checkRemoveFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {
+    public void checkRemoveFriendValidate(Logger log, UserStorage userStorage, Integer id, Integer friendId) {
         if (!userStorage.getUsers().get(id).getFriends().contains(friendId)) {
+            log.error("Этого пользователя уже нет в друзьях, {}", friendId);
             throw new ValidationException("Этого пользователя уже нет в друзьях");
         }
     }
 
-    public void checkAddFriendValidate(UserStorage userStorage, Integer id, Integer friendId) {
+    public void checkAddFriendValidate(Logger log, UserStorage userStorage, Integer id, Integer friendId) {
         if (userStorage.getUsers().get(id).getFriends().contains(friendId)) {
+            log.error("Этот пользователь уже есть в друзьях, {}", friendId);
             throw new ValidationException("Этот пользователь уже есть в друзьях");
         }
     }

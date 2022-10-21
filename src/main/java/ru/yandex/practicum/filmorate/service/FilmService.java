@@ -39,7 +39,7 @@ public class FilmService implements Comparator<Film> {
     public Film addLike (Integer id, Integer userId) {
         filmValidService.checkFilmValidate(log, filmStorage.getFilms(), id);
         userValidateService.checkUserValidate(log, userStorage.getUsers(), id);
-        filmValidService.checkAddLikeValidate(filmStorage, id, userId);
+        filmValidService.checkAddLikeValidate(log, filmStorage, id, userId);
         filmStorage.getFilms().get(id).getLikes().add(userId);
         return filmStorage.getFilms().get(id);
     }
@@ -47,7 +47,7 @@ public class FilmService implements Comparator<Film> {
     public Film removeLike (Integer id, Integer userId) {
         filmValidService.checkFilmValidate(log, filmStorage.getFilms(), id);
         userValidateService.checkUserValidate(log, userStorage.getUsers(), id);
-        filmValidService.checkRemoveLikeValidate(filmStorage, id, userId);
+        filmValidService.checkRemoveLikeValidate(log, filmStorage, id, userId);
         filmStorage.getFilms().get(id).getLikes().remove(userId);
         return filmStorage.getFilms().get(id);
     }

@@ -13,14 +13,16 @@ import java.util.HashMap;
 @Service
 public class FilmValidateService {
 
-    public void checkRemoveLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {
+    public void checkRemoveLikeValidate(Logger log, FilmStorage filmStorage, Integer id, Integer userId) {
         if (!filmStorage.getFilms().get(id).getLikes().contains(userId)){
+            log.error("Этот пользователь не ставил лайк этому фильму, {}", userId);
             throw new ValidationException("Этот пользователь не ставил лайк этому фильму");
         }
     }
 
-    public void checkAddLikeValidate(FilmStorage filmStorage, Integer id, Integer userId) {
+    public void checkAddLikeValidate(Logger log, FilmStorage filmStorage, Integer id, Integer userId) {
         if (filmStorage.getFilms().get(id).getLikes().contains(userId)){
+            log.error("Лайк этого пользователя уже есть у фильма, {}", userId);
             throw new ValidationException("Лайк этого пользователя уже есть у фильма");
         }
     }
