@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;//
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,6 +18,6 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private List<Integer> likes = new ArrayList<>();
-    private String genre;
-    private String rating;
+    //private String genre;
+    //private String rating;
 }
