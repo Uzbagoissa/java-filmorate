@@ -18,5 +18,5 @@ public class User {
     private String login;
     private LocalDate birthday;
     private List<Integer> friends = new ArrayList<>();
-    private boolean status;
+    //private boolean status;
 }
