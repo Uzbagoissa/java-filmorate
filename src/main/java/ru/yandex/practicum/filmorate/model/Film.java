@@ -18,4 +18,6 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private List<Integer> likes = new ArrayList<>();
+    private String genre;
+    private String rating;
 }
