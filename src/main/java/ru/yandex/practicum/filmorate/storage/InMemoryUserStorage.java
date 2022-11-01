@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.service.UserValidateService;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Service
+/*@Service
 public class InMemoryUserStorage implements UserStorage {
     private final UserValidateService userValidateService;
     private static final HashMap<Integer, User> users = new HashMap<>();
@@ -71,4 +71,4 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
-}
+}*/

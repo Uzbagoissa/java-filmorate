@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Film {
     private int id;
     private String name;
@@ -18,6 +16,5 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private List<Integer> likes = new ArrayList<>();
-    private String genre;
     private String rating;
 }

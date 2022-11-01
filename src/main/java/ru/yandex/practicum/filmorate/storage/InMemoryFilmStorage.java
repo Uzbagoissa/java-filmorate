@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Service
+/*@Service
 public class InMemoryFilmStorage implements FilmStorage {
     private final FilmValidateService filmValidService;
     private static final HashMap<Integer, Film> films = new HashMap<>();
@@ -59,4 +59,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Фильм обновлен - , {}", film);
         return film;
     }
-}
+}*/
