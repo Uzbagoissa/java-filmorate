@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -17,16 +18,19 @@ import java.util.stream.Collectors;
 public class FilmService implements Comparator<Film> {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
-    private final FilmValidateService filmValidService;
-    private final UserValidateService userValidateService;
+    private final FilmValidateServiceStorage filmValidServiceStorage;
+    private final UserValidateServiceStorage userValidateServiceStorage;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage, FilmValidateService filmValidService, UserValidateService userValidateService) {
+    public FilmService(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage,
+                       @Qualifier("inMemoryUserStorage") UserStorage userStorage,
+                       FilmValidateServiceStorage filmValidServiceStorage,
+                       UserValidateServiceStorage userValidateServiceStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
-        this.filmValidService = filmValidService;
-        this.userValidateService = userValidateService;
+        this.filmValidServiceStorage = filmValidServiceStorage;
+        this.userValidateServiceStorage = userValidateServiceStorage;
     }
 
     public List<Film> getMostPopularFilms (Integer count) {
@@ -37,17 +41,17 @@ public class FilmService implements Comparator<Film> {
     }
 
     public Film addLike (Integer id, Integer userId) {
-        filmValidService.checkFilmValidate(log, filmStorage.getFilms(), id);
-        userValidateService.checkUserValidate(log, userStorage.getUsers(), id);
-        filmValidService.checkAddLikeValidate(log, filmStorage, id, userId);
+        filmValidServiceStorage.checkFilmValidate(log, filmStorage.getFilms(), id);
+        userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), id);
+        filmValidServiceStorage.checkAddLikeValidate(log, filmStorage, id, userId);
         filmStorage.getFilms().get(id).getLikes().add(userId);
         return filmStorage.getFilms().get(id);
     }
 
     public Film removeLike (Integer id, Integer userId) {
-        filmValidService.checkFilmValidate(log, filmStorage.getFilms(), id);
-        userValidateService.checkUserValidate(log, userStorage.getUsers(), id);
-        filmValidService.checkRemoveLikeValidate(log, filmStorage, id, userId);
+        filmValidServiceStorage.checkFilmValidate(log, filmStorage.getFilms(), id);
+        userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), id);
+        filmValidServiceStorage.checkRemoveLikeValidate(log, filmStorage, id, userId);
         filmStorage.getFilms().get(id).getLikes().remove(userId);
         return filmStorage.getFilms().get(id);
     }

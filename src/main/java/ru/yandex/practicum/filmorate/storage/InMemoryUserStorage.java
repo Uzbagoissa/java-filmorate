@@ -7,21 +7,21 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.dao.UserStorage;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserValidateService;
+import ru.yandex.practicum.filmorate.service.UserValidateServiceStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
 public class InMemoryUserStorage implements UserStorage {
-    private final UserValidateService userValidateService;
+    private final UserValidateServiceStorage userValidateServiceStorage;
     private static final HashMap<Integer, User> users = new HashMap<>();
     private int userID = 1;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public InMemoryUserStorage(UserValidateService userValidateService) {
-        this.userValidateService = userValidateService;
+    public InMemoryUserStorage(UserValidateServiceStorage userValidateServiceStorage) {
+        this.userValidateServiceStorage = userValidateServiceStorage;
     }
 
     @Override
@@ -31,7 +31,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Integer id) {
-        userValidateService.checkUserValidate(log, users, id);
+        userValidateServiceStorage.checkUserValidate(log, users, id);
+        log.info("Найден пользователь");
         return users.get(id);
     }
 
@@ -42,26 +43,20 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        userValidateService.checkCreateUserValidate(log, users, user);
+        userValidateServiceStorage.checkCreateUserValidate(log, users, user);
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
-            user.setId(userID);
-            users.put(userID, user);
-            userID++;
-            log.info("Добавлен новый пользователь, {}", user);
-            return user;
-        } else {
-            user.setId(userID);
-            users.put(userID, user);
-            userID++;
-            log.info("Добавлен новый пользователь, {}", user);
-            return user;
         }
+        user.setId(userID);
+        users.put(userID, user);
+        userID++;
+        log.info("Добавлен новый пользователь, {}", user);
+        return user;
     }
 
     @Override
     public User updateUser(User user) {
-        userValidateService.checkUserValidate(log, users, user.getId());
+        userValidateServiceStorage.checkUserValidate(log, users, user.getId());
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
@@ -70,5 +65,4 @@ public class InMemoryUserStorage implements UserStorage {
         log.info("Пользователь обновлен - , {}", user);
         return user;
     }
-
 }

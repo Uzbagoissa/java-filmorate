@@ -1,41 +1,29 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.dao.UserStorage;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Service
-public class UserValidateService {
+public class UserValidateServiceDb {
 
-    public void checkRemoveFriendValidate(Logger log, UserStorage userStorage, Integer id, Integer friendId) {
-        if (!userStorage.getUsers().get(id).getFriends().contains(friendId)) {
-            log.error("Этого пользователя уже нет в друзьях, {}", friendId);
-            throw new ValidationException("Этого пользователя уже нет в друзьях");
-        }
-    }
-
-    public void checkAddFriendValidate(Logger log, UserStorage userStorage, Integer id, Integer friendId) {
-        if (userStorage.getUsers().get(id).getFriends().contains(friendId)) {
-            log.error("Этот пользователь уже есть в друзьях, {}", friendId);
-            throw new ValidationException("Этот пользователь уже есть в друзьях");
-        }
-    }
-
-    public void checkUserValidate(Logger log, HashMap<Integer, User> users, Integer id) {
-        if (!users.containsKey(id)){
+    public void checkUserValidate(Logger log, SqlRowSet userRows, Integer id) {
+        if(!userRows.next()) {
             log.error("Такого пользователя не существует!, {}", id);
             throw new NotFoundException("Такого пользователя не существует!");
         }
     }
 
-    public void checkCreateUserValidate(Logger log, HashMap<Integer, User> users, User user) {
-        if (users.containsKey(user.getId())) {
+    public void checkCreateUserValidate(Logger log, SqlRowSet userRows, User user) {
+        if(userRows.next()) {
             log.error("Такой пользователь уже существует!, {}", user);
             throw new ValidationException("Такой пользователь уже существует!");
         } else if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
@@ -49,4 +37,5 @@ public class UserValidateService {
             throw new ValidationException("Дата рождения не может быть в будущем!");
         }
     }
+
 }

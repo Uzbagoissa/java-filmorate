@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmValidateService;
+import ru.yandex.practicum.filmorate.service.FilmValidateServiceStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 import java.time.LocalDate;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 class FilmControllerTests {
     Film film = new Film();
-    FilmValidateService filmValidService = new FilmValidateService();
+    FilmValidateServiceStorage filmValidService = new FilmValidateServiceStorage();
     InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage(filmValidService);
 
     @Test

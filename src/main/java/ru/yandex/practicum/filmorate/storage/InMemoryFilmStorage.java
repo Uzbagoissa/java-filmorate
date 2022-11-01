@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmValidateService;
+import ru.yandex.practicum.filmorate.service.FilmValidateServiceStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,19 +15,20 @@ import java.util.List;
 
 @Service
 public class InMemoryFilmStorage implements FilmStorage {
-    private final FilmValidateService filmValidService;
+    private final FilmValidateServiceStorage filmValidService;
     private static final HashMap<Integer, Film> films = new HashMap<>();
     private int filmID = 1;
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @Autowired
-    public InMemoryFilmStorage(FilmValidateService filmValidService) {
+    public InMemoryFilmStorage(FilmValidateServiceStorage filmValidService) {
         this.filmValidService = filmValidService;
     }
 
     @Override
     public Film getFilm(Integer id) {
         filmValidService.checkFilmValidate(log, films, id);
+        log.info("Найден фильм");
         return films.get(id);
     }
 

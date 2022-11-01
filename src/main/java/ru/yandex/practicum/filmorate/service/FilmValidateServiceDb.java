@@ -1,41 +1,25 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.dao.FilmStorage;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 
 @Service
-public class FilmValidateService {
-
-    public void checkRemoveLikeValidate(Logger log, FilmStorage filmStorage, Integer id, Integer userId) {
-        if (!filmStorage.getFilms().get(id).getLikes().contains(userId)){
-            log.error("Этот пользователь не ставил лайк этому фильму, {}", userId);
-            throw new ValidationException("Этот пользователь не ставил лайк этому фильму");
-        }
-    }
-
-    public void checkAddLikeValidate(Logger log, FilmStorage filmStorage, Integer id, Integer userId) {
-        if (filmStorage.getFilms().get(id).getLikes().contains(userId)){
-            log.error("Лайк этого пользователя уже есть у фильма, {}", userId);
-            throw new ValidationException("Лайк этого пользователя уже есть у фильма");
-        }
-    }
-
-    public void checkFilmValidate(Logger log, HashMap<Integer, Film> films, Integer id) {
-        if (!films.containsKey(id)){
+public class FilmValidateServiceDb {
+    public void checkFilmValidate(Logger log, SqlRowSet userRows, Integer id) {
+        if(!userRows.next()) {
             log.error("Такого фильма не существует!, {}", id);
             throw new NotFoundException("Такого фильма не существует!");
         }
     }
 
-    public void checkAddFilmValidate(Logger log, HashMap<Integer, Film> films, Film film) {
-        if (films.containsKey(film.getId())) {
+    public void checkAddFilmValidate(Logger log, SqlRowSet userRows, Film film) {
+        if (userRows.next()) {
             log.error("Фильм уже был добавлен!, {}", film);
             throw new ValidationException("Фильм уже был добавлен!");
         } else if (film.getName().isBlank()) {
@@ -50,6 +34,9 @@ public class FilmValidateService {
         } else if (film.getDuration() <= 0) {
             log.error("Продолжительность фильма должна быть положительна!, {}", film);
             throw new ValidationException("Продолжительность фильма должна быть положительна!");
+        } else if (film.getRating() <= 0 || film.getRating() > 5) {
+            log.error("Индекс рейтинг фильма должен быть в пределах от 1 до 5!, {}", film);
+            throw new ValidationException("Индекс рейтинг фильма должен быть в пределах от 1 до 5!");
         }
     }
 }
