@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.RatingMPA;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
 
@@ -41,6 +43,32 @@ public class FilmController {
             throw new NotFoundException("count");
         }
         return filmService.getMostPopularFilms(count);
+    }
+
+    @GetMapping("/genres")
+    public List<Genre> getGenres() {
+        return filmStorage.getGenres();
+    }
+
+    @GetMapping("/genres/{id}")
+    public Genre getGenre(@PathVariable("id") Integer id) {
+        if (id <= 0) {
+            throw new NotFoundException("id");
+        }
+        return filmStorage.getGenre(id);
+    }
+
+    @GetMapping("/mpa/{id}")
+    public RatingMPA getRatingMPA(@PathVariable("id") Integer id) {
+        if (id <= 0) {
+            throw new NotFoundException("id");
+        }
+        return filmStorage.getRatingMPA(id);
+    }
+
+    @GetMapping("/mpa")
+    public List<RatingMPA> getRatingMPAs() {
+        return filmStorage.getRatingMPAs();
     }
 
     @PostMapping()

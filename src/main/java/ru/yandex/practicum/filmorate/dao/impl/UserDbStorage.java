@@ -50,6 +50,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getAllUsers() {
         String sql = "select * from USERR";
+        log.info("Найдены пользователи");
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToUser(rs));
     }
 

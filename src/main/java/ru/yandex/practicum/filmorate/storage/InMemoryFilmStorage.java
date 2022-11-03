@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.RatingMPA;
 import ru.yandex.practicum.filmorate.service.FilmValidateServiceStorage;
 
 import java.util.ArrayList;
@@ -33,12 +35,33 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Genre> getGenres() {
+        return null;
+    }
+
+    @Override
+    public Genre getGenre(Integer id) {
+        return null;
+    }
+
+    @Override
+    public RatingMPA getRatingMPA(Integer id) {
+        return null;
+    }
+
+    @Override
+    public List<RatingMPA> getRatingMPAs() {
+        return null;
+    }
+
+    @Override
     public HashMap<Integer, Film> getFilms() {
         return films;
     }
 
     @Override
     public List<Film> getAllFilms() {
+        log.info("Найдены фильмы");
         return new ArrayList<>(films.values());
     }
 
@@ -60,4 +83,5 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Фильм обновлен - , {}", film);
         return film;
     }
+
 }

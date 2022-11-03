@@ -18,6 +18,20 @@ public class FilmValidateServiceDb {
         }
     }
 
+    public void checkGenreValidate(Logger log, SqlRowSet userRows, Integer id) {
+        if(!userRows.next()) {
+            log.error("Такого жанра не существует!, {}", id);
+            throw new NotFoundException("Такого жанра не существует!");
+        }
+    }
+
+    public void checkRatingMPAValidate(Logger log, SqlRowSet userRows, Integer id) {
+        if(!userRows.next()) {
+            log.error("Такого рейтинга не существует!, {}", id);
+            throw new NotFoundException("Такого рейтинга не существует!");
+        }
+    }
+
     public void checkAddFilmValidate(Logger log, SqlRowSet userRows, Film film) {
         if (userRows.next()) {
             log.error("Фильм уже был добавлен!, {}", film);
@@ -34,9 +48,15 @@ public class FilmValidateServiceDb {
         } else if (film.getDuration() <= 0) {
             log.error("Продолжительность фильма должна быть положительна!, {}", film);
             throw new ValidationException("Продолжительность фильма должна быть положительна!");
-        } else if (film.getRating() <= 0 || film.getRating() > 5) {
+        } else if (film.getMpa() <= 0 || film.getMpa() > 5) {
             log.error("Индекс рейтинг фильма должен быть в пределах от 1 до 5!, {}", film);
             throw new ValidationException("Индекс рейтинг фильма должен быть в пределах от 1 до 5!");
+        }
+        for (int i = 0; i < film.getGenres().size(); i++) {
+            if (film.getGenres().get(i) <= 0 || film.getGenres().get(i) > 6) {
+                log.error("Индекс жанра фильма должен быть в пределах от 1 до 6!, {}", film);
+                throw new ValidationException("Индекс жанра фильма должен быть в пределах от 1 до 6!");
+            }
         }
     }
 }
