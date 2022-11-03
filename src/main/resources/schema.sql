@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS film (
   description varchar,
   release_date date,
   duration int,
-  rating_id int
+  rating_id int,
+  rate int
 );
 
 CREATE TABLE IF NOT EXISTS genre (

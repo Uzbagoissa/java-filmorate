@@ -40,7 +40,8 @@ public class FilmDbStorage implements FilmStorage {
                 filmRows.getString("description"),
                 LocalDate.parse(Objects.requireNonNull(filmRows.getString("release_date"))),
                 filmRows.getInt("duration"),
-                filmRows.getInt("rating_id")
+                filmRows.getInt("rating_id"),
+                filmRows.getInt("rate")
         );
         log.info("Найден фильм");
         return film;
@@ -58,13 +59,14 @@ public class FilmDbStorage implements FilmStorage {
         String sqlCheck = "select * from FILM where FILM_ID = ?";
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId());
         filmValidateServiceDb.checkAddFilmValidate(log, filmRows, film);
-        String sqlFilm = "insert into FILM(NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID) values ( ?, ?, ?, ?, ?)";
+        String sqlFilm = "insert into FILM(NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID, RATE) values ( ?, ?, ?, ?, ?, ? )";
         jdbcTemplate.update(sqlFilm,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
-                film.getMpa());
+                film.getMpa(),
+                film.getRate());
         String sqlID = "select FILM_ID from FILM where NAME = ?";
         SqlRowSet filmRowsID = jdbcTemplate.queryForRowSet(sqlID, film.getName());
         filmRowsID.next();
@@ -85,13 +87,14 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId());
         filmValidateServiceDb.checkFilmValidate(log, filmRows, film.getId());
         filmValidateServiceDb.checkAddFilmValidate(log, filmRows, film);
-        String sql = "update FILM set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ? where FILM_ID = ?";
+        String sql = "update FILM set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ?, RATE = ? where FILM_ID = ?";
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getMpa(),
+                film.getRate(),
                 film.getId());
         String sqlFilmGenreDel = "delete from FILM_GENRE where FILM_ID = ?";
         jdbcTemplate.update(sqlFilmGenreDel, film.getId());
@@ -153,6 +156,7 @@ public class FilmDbStorage implements FilmStorage {
                 .releaseDate(LocalDate.parse(Objects.requireNonNull(rs.getString("release_date"))))
                 .duration(rs.getInt("duration"))
                 .mpa(rs.getInt("rating_id"))
+                .rate(rs.getInt("rate"))
                 .build();
     }
 

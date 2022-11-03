@@ -19,15 +19,17 @@ public class Film {
     private List<Integer> likes = new ArrayList<>();
     private List<Integer> genres = new ArrayList<>();
     private int mpa;
+    private int rate;
 
     @Builder
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, int mpa) {
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, int mpa, int rate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
+        this.rate = rate;
     }
 
     public Film() {
