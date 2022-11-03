@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.RatingMPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
 
@@ -59,16 +59,16 @@ public class FilmController {
     }
 
     @GetMapping("/mpa/{id}")
-    public RatingMPA getRatingMPA(@PathVariable("id") Integer id) {
+    public Mpa getMPA(@PathVariable("id") Integer id) {
         if (id <= 0) {
             throw new NotFoundException("id");
         }
-        return filmStorage.getRatingMPA(id);
+        return filmStorage.getMPA(id);
     }
 
     @GetMapping("/mpa")
-    public List<RatingMPA> getRatingMPAs() {
-        return filmStorage.getRatingMPAs();
+    public List<Mpa> getMPAs() {
+        return filmStorage.getMPAs();
     }
 
     @PostMapping()

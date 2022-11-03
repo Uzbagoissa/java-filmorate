@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.dao;
 
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.RatingMPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +14,9 @@ public interface FilmStorage {
 
     Genre getGenre(Integer id);
 
-    RatingMPA getRatingMPA(Integer id);
+    Mpa getMPA(Integer id);
 
-    List<RatingMPA> getRatingMPAs();
+    List<Mpa> getMPAs();
 
     HashMap<Integer, Film> getFilms();
     List<Film> getAllFilms();

@@ -48,10 +48,10 @@ public class FilmValidateServiceDb {
         } else if (film.getDuration() <= 0) {
             log.error("Продолжительность фильма должна быть положительна!, {}", film);
             throw new ValidationException("Продолжительность фильма должна быть положительна!");
-        } else if (film.getMpa() <= 0 || film.getMpa() > 5) {
+        } /*else if (film.getMpa() <= 0 || film.getMpa() > 5) {
             log.error("Индекс рейтинг фильма должен быть в пределах от 1 до 5!, {}", film);
             throw new ValidationException("Индекс рейтинг фильма должен быть в пределах от 1 до 5!");
-        }
+        }*/
         for (int i = 0; i < film.getGenres().size(); i++) {
             if (film.getGenres().get(i) <= 0 || film.getGenres().get(i) > 6) {
                 log.error("Индекс жанра фильма должен быть в пределах от 1 до 6!, {}", film);

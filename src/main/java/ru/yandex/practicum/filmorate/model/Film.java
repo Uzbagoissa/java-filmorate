@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,17 +16,16 @@ public class Film {
     private int duration;
     private List<Integer> likes = new ArrayList<>();
     private List<Integer> genres = new ArrayList<>();
-    private int mpa;
+    private Mpa mpa;
     private int rate;
 
     @Builder
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, int mpa, int rate) {
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, int rate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
-        this.mpa = mpa;
         this.rate = rate;
     }
 

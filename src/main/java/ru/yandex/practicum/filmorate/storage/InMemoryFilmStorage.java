@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.dao.FilmStorage;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.RatingMPA;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmValidateServiceStorage;
 
 import java.util.ArrayList;
@@ -45,12 +45,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public RatingMPA getRatingMPA(Integer id) {
+    public Mpa getMPA(Integer id) {
         return null;
     }
 
     @Override
-    public List<RatingMPA> getRatingMPAs() {
+    public List<Mpa> getMPAs() {
         return null;
     }
 

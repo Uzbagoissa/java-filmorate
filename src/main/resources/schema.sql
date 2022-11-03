@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS film (
   description varchar,
   release_date date,
   duration int,
-  rating_id int,
+  mpa_id int,
   rate int
 );
 
@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS genre (
   name varchar
 );
 
-CREATE TABLE IF NOT EXISTS rating (
-  rating_id int PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS mpa (
+  mpa_id int PRIMARY KEY,
   name varchar
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS friend_status (
   status boolean
 );
 
-ALTER TABLE film ADD CONSTRAINT IF NOT EXISTS rating_id FOREIGN KEY (rating_id) REFERENCES rating (rating_id);
+ALTER TABLE film ADD CONSTRAINT IF NOT EXISTS mpa_id FOREIGN KEY (mpa_id) REFERENCES mpa (mpa_id);
 
 ALTER TABLE film_genre ADD CONSTRAINT IF NOT EXISTS genre_id FOREIGN KEY (genre_id) REFERENCES genre (genre_id);
 
