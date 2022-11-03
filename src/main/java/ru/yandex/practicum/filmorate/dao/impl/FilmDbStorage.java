@@ -58,14 +58,17 @@ public class FilmDbStorage implements FilmStorage {
         String sqlCheck = "select * from FILM where FILM_ID = ?";
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId());
         filmValidateServiceDb.checkAddFilmValidate(log, filmRows, film);
-        String sqlFilm = "insert into FILM(FILM_ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID) values ( ?, ?, ?, ?, ?, ?)";
+        String sqlFilm = "insert into FILM(NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATING_ID) values ( ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sqlFilm,
-                film.getId(),
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getMpa());
+        String sqlID = "select FILM_ID from FILM where NAME = ?";
+        SqlRowSet filmRowsID = jdbcTemplate.queryForRowSet(sqlID, film.getName());
+        filmRowsID.next();
+        film.setId(filmRowsID.getInt("film_id"));
         for (int i = 0; i < film.getGenres().size(); i++) {
             String sqlFilmGenre = "insert into FILM_GENRE(FILM_ID, GENRE_ID) values (?, ?)";
             jdbcTemplate.update(sqlFilmGenre,
@@ -82,9 +85,8 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId());
         filmValidateServiceDb.checkFilmValidate(log, filmRows, film.getId());
         filmValidateServiceDb.checkAddFilmValidate(log, filmRows, film);
-        String sql = "update FILM set FILM_ID = ?, NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ? where FILM_ID = ?";
+        String sql = "update FILM set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATING_ID = ? where FILM_ID = ?";
         jdbcTemplate.update(sql,
-                film.getId(),
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
