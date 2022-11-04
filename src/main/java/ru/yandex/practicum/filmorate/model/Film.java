@@ -15,7 +15,7 @@ public class Film {
     private LocalDate releaseDate;
     private int duration;
     private List<Integer> likes = new ArrayList<>();
-    private List<Integer> genres = new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
     private Mpa mpa;
     private int rate;
 

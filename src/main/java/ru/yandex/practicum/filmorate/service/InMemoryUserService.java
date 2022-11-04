@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.dao.UserService;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.dao.UserStorage;
 
@@ -14,18 +15,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class InMemoryUserService implements UserService {
     private final UserStorage userStorage;
     private final UserValidateServiceStorage userValidateServiceStorage;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserService(@Qualifier("inMemoryUserStorage") UserStorage userStorage,
-                       UserValidateServiceStorage userValidateServiceStorage) {
+    public InMemoryUserService(@Qualifier("inMemoryUserStorage") UserStorage userStorage,
+                               UserValidateServiceStorage userValidateServiceStorage) {
         this.userStorage = userStorage;
         this.userValidateServiceStorage = userValidateServiceStorage;
     }
 
+    @Override
     public List<User> getAllFriends(Integer id) {
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), id);
         return userStorage.getUsers().values().stream()
@@ -33,6 +35,7 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<User> getCommonFriends(Integer id, Integer otherId) {
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), id);
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), otherId);
@@ -45,6 +48,7 @@ public class UserService {
         return commonFriends;
     }
 
+    @Override
     public User addFriend(Integer id, Integer friendId) {
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), id);
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), friendId);
@@ -54,6 +58,7 @@ public class UserService {
         return userStorage.getUsers().get(id);
     }
 
+    @Override
     public User removeFriend(Integer id, Integer friendId) {
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), id);
         userValidateServiceStorage.checkUserValidate(log, userStorage.getUsers(), friendId);

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.UserStorage;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -19,6 +20,13 @@ public class UserValidateServiceDb {
         if(!userRows.next()) {
             log.error("Такого пользователя не существует!, {}", id);
             throw new NotFoundException("Такого пользователя не существует!");
+        }
+    }
+
+    public void checkAddFriendValidate(Logger log, SqlRowSet idCheckRows, Integer friendId) {
+        if (idCheckRows.next()){
+            log.error("Этот пользователь уже есть в друзьях, {}", friendId);
+            throw new ValidationException("Этот пользователь уже есть в друзьях");
         }
     }
 

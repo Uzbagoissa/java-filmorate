@@ -9,15 +9,10 @@ import java.util.List;
 
 public interface FilmStorage {
     Film getFilm(Integer id);
-
     List<Genre> getGenres();
-
     Genre getGenre(Integer id);
-
     Mpa getMPA(Integer id);
-
     List<Mpa> getMPAs();
-
     HashMap<Integer, Film> getFilms();
     List<Film> getAllFilms();
     Film addFilm(Film film);

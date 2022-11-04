@@ -45,32 +45,6 @@ public class FilmController {
         return filmService.getMostPopularFilms(count);
     }
 
-    @GetMapping("/genres")
-    public List<Genre> getGenres() {
-        return filmStorage.getGenres();
-    }
-
-    @GetMapping("/genres/{id}")
-    public Genre getGenre(@PathVariable("id") Integer id) {
-        if (id <= 0) {
-            throw new NotFoundException("id");
-        }
-        return filmStorage.getGenre(id);
-    }
-
-    @GetMapping("/mpa/{id}")
-    public Mpa getMPA(@PathVariable("id") Integer id) {
-        if (id <= 0) {
-            throw new NotFoundException("id");
-        }
-        return filmStorage.getMPA(id);
-    }
-
-    @GetMapping("/mpa")
-    public List<Mpa> getMPAs() {
-        return filmStorage.getMPAs();
-    }
-
     @PostMapping()
     public Film addFilm(@RequestBody Film film) {
         return filmStorage.addFilm(film);

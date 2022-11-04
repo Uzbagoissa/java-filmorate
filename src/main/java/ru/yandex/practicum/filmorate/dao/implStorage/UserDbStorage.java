@@ -1,17 +1,13 @@
-package ru.yandex.practicum.filmorate.dao.impl;
+package ru.yandex.practicum.filmorate.dao.implStorage;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserStorage;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserValidateServiceDb;
-import ru.yandex.practicum.filmorate.service.UserValidateServiceStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,18 +50,18 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        String sqlCheck = "select * from USERR where USER_ID = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlCheck, user.getId());
+        String sql = "select * from USERR where USER_ID = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
         userValidateServiceDb.checkCreateUserValidate(log, userRows, user);
-        String sql = "insert into USERR(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";
+        sql = "insert into USERR(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getName(),
                 user.getLogin(),
                 user.getBirthday());
         log.info("Добавлен новый пользователь, {}", user);
-        String sqlID = "select USER_ID from USERR where EMAIL = ?";
-        SqlRowSet userRowsID = jdbcTemplate.queryForRowSet(sqlID, user.getEmail());
+        sql = "select USER_ID from USERR where EMAIL = ?";
+        SqlRowSet userRowsID = jdbcTemplate.queryForRowSet(sql, user.getEmail());
         userRowsID.next();
         user.setId(userRowsID.getInt("user_id"));
         return user;
@@ -73,11 +69,11 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sqlCheck = "select * from USERR where USER_ID = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sqlCheck, user.getId());
+        String sql= "select * from USERR where USER_ID = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
         userValidateServiceDb.checkUserValidate(log, userRows, user.getId());
         userValidateServiceDb.checkCreateUserValidate(log, userRows, user);
-        String sql = "update USERR set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";
+        sql = "update USERR set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getName(),
