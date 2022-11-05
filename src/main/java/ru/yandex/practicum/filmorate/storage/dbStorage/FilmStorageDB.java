@@ -1,15 +1,15 @@
-package ru.yandex.practicum.filmorate.dao.implStorage;
+package ru.yandex.practicum.filmorate.storage.dbStorage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.storageInterfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.service.FilmValidateServiceDb;
+import ru.yandex.practicum.filmorate.validate.dbValidate.FilmValidateDB;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,22 +19,22 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class FilmDbStorage implements FilmStorage {
-    private final Logger log = LoggerFactory.getLogger(FilmDbStorage.class);
+public class FilmStorageDB implements FilmStorage {
+    private final Logger log = LoggerFactory.getLogger(FilmStorageDB.class);
     private final JdbcTemplate jdbcTemplate;
-    private final FilmValidateServiceDb filmValidateServiceDb;
+    private final FilmValidateDB filmValidateDB;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmValidateServiceDb filmValidateServiceDb) {
+    public FilmStorageDB(JdbcTemplate jdbcTemplate, FilmValidateDB filmValidateDB) {
         this.jdbcTemplate = jdbcTemplate;
-        this.filmValidateServiceDb = filmValidateServiceDb;
+        this.filmValidateDB = filmValidateDB;
     }
 
     @Override
     public Film getFilm(Integer id) {
-        String sql = "select * from FILM where FILM_ID = ?";
+        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, id);
-        filmValidateServiceDb.checkFilmValidate(log, filmRows, id);
-        Film film = new Film(
+        filmValidateDB.checkFilmValidate(log, filmRows, id);
+        Film film = new Film(                                                                                           //метод
                 filmRows.getInt("film_id"),
                 filmRows.getString("name"),
                 filmRows.getString("description"),
@@ -42,7 +42,6 @@ public class FilmDbStorage implements FilmStorage {
                 filmRows.getInt("duration"),
                 filmRows.getInt("rate")
         );
-        film.setMpa(getSingleMPA(id));                                                                                  //задали MPA фильму
         log.info("Найден фильм");
         return film;
     }
@@ -56,10 +55,10 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        String sql = "select * from FILM where FILM_ID = ?";
+        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация создания фильма
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, film.getId());
-        filmValidateServiceDb.checkAddFilmValidate(log, filmRows, film);
-        sql = "insert into FILM(NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID, RATE) values ( ?, ?, ?, ?, ?, ? )";
+        filmValidateDB.checkAddFilmValidate(log, filmRows, film);
+        sql = "insert into FILM(NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID, RATE) values ( ?, ?, ?, ?, ?, ? )";  //метод
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
@@ -77,17 +76,18 @@ public class FilmDbStorage implements FilmStorage {
                     film.getId(),
                     film.getGenres().get(i).getId());
         }
-        log.info("Добавлен новый фильм, {}", film);
+        log.info("Добавлен новый фильм {}", film);
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        String sql = "select * from FILM where FILM_ID = ?";
+        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, film.getId());
-        filmValidateServiceDb.checkFilmValidate(log, filmRows, film.getId());
-        filmValidateServiceDb.checkAddFilmValidate(log, filmRows, film);
-        sql = "update FILM set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ?, RATE = ? where FILM_ID = ?";
+        filmValidateDB.checkFilmValidate(log, filmRows, film.getId());
+        filmValidateDB.checkAddFilmValidate(log, filmRows, film);                                                       //валидация создания фильма
+        sql = "update FILM set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ?, RATE = ? " +       //метод
+                "where FILM_ID = ?";
         jdbcTemplate.update(sql,
                 film.getName(),
                 film.getDescription(),
@@ -104,7 +104,7 @@ public class FilmDbStorage implements FilmStorage {
                     film.getId(),
                     film.getGenres().get(i).getId());
         }
-        log.info("Фильм обновлен - , {}", film);
+        log.info("Фильм обновлен - {}", film);
         return film;
     }
 
@@ -116,11 +116,11 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Genre getGenre(Integer id) {
-        String sql = "select * from GENRE where GENRE_ID = ?";
-        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sql, id);
-        filmValidateServiceDb.checkGenreValidate(log, genreRows, id);
-        Genre genre = new Genre(
+    public Genre getGenre(Integer genreId) {
+        String sql = "select * from GENRE where GENRE_ID = ?";                                                          //валидация жанра
+        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sql, genreId);
+        filmValidateDB.checkGenreValidate(log, genreRows, genreId);
+        Genre genre = new Genre(                                                                                        //метод
                 genreRows.getInt("genre_id"),
                 genreRows.getString("name")
         );
@@ -129,9 +129,9 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Mpa getMPA(Integer id) {
+    public Mpa getMPA(Integer mpaId) {
         log.info("Найден рейтинг");
-        return getSingleMPA(id);
+        return getSingleMPA(mpaId);
     }
 
     @Override
@@ -166,11 +166,11 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
     }
 
-    public Mpa getSingleMPA(Integer id) {                                                                                //отдельным методом, т.к. задействован в нескольких местах
-        String sql = "select * from MPA where MPA_ID = ?";
-        SqlRowSet ratingMPARows = jdbcTemplate.queryForRowSet(sql, id);
-        filmValidateServiceDb.checkRatingMPAValidate(log, ratingMPARows, id);
-        Mpa mpa = new Mpa(
+    private Mpa getSingleMPA(Integer mpaId) {                                                                            //отдельным методом, т.к. задействован в нескольких местах
+        String sql = "select * from MPA where MPA_ID = ?";                                                              //валидация рейтинга
+        SqlRowSet ratingMPARows = jdbcTemplate.queryForRowSet(sql, mpaId);
+        filmValidateDB.checkRatingMPAValidate(log, ratingMPARows, mpaId);
+        Mpa mpa = new Mpa(                                                                                              //метод
                 ratingMPARows.getInt("mpa_id"),
                 ratingMPARows.getString("name")
         );

@@ -1,27 +1,27 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.imStorage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
-import ru.yandex.practicum.filmorate.dao.UserStorage;
+import ru.yandex.practicum.filmorate.storage.storageInterfaces.UserStorage;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserValidateServiceStorage;
+import ru.yandex.practicum.filmorate.validate.imValidate.UserValidateIM;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
-public class InMemoryUserStorage implements UserStorage {
-    private final UserValidateServiceStorage userValidateServiceStorage;
+public class UserStorageIM implements UserStorage {
+    private final UserValidateIM userValidateIM;
     private static final HashMap<Integer, User> users = new HashMap<>();
     private int userID = 1;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public InMemoryUserStorage(UserValidateServiceStorage userValidateServiceStorage) {
-        this.userValidateServiceStorage = userValidateServiceStorage;
+    public UserStorageIM(UserValidateIM userValidateIM) {
+        this.userValidateIM = userValidateIM;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Integer id) {
-        userValidateServiceStorage.checkUserValidate(log, users, id);
+        userValidateIM.checkUserValidate(log, users, id);
         log.info("Найден пользователь");
         return users.get(id);
     }
@@ -44,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        userValidateServiceStorage.checkCreateUserValidate(log, users, user);
+        userValidateIM.checkCreateUserValidate(log, users, user);
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
@@ -57,7 +57,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        userValidateServiceStorage.checkUserValidate(log, users, user.getId());
+        userValidateIM.checkUserValidate(log, users, user.getId());
         if (user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }

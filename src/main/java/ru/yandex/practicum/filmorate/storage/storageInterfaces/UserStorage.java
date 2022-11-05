@@ -1,8 +1,7 @@
-package ru.yandex.practicum.filmorate.dao;
+package ru.yandex.practicum.filmorate.storage.storageInterfaces;
 
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

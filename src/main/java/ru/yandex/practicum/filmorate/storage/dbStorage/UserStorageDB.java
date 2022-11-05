@@ -1,13 +1,13 @@
-package ru.yandex.practicum.filmorate.dao.implStorage;
+package ru.yandex.practicum.filmorate.storage.dbStorage;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.dao.UserStorage;
+import ru.yandex.practicum.filmorate.storage.storageInterfaces.UserStorage;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserValidateServiceDb;
+import ru.yandex.practicum.filmorate.validate.dbValidate.UserValidateDB;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,22 +15,22 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Component
-public class UserDbStorage implements UserStorage {
-    private final Logger log = LoggerFactory.getLogger(UserDbStorage.class);
+public class UserStorageDB implements UserStorage {
+    private final Logger log = LoggerFactory.getLogger(UserStorageDB.class);
     private final JdbcTemplate jdbcTemplate;
-    private final UserValidateServiceDb userValidateServiceDb;
+    private final UserValidateDB userValidateDB;
 
-    public UserDbStorage(JdbcTemplate jdbcTemplate, UserValidateServiceDb userValidateServiceDb) {
+    public UserStorageDB(JdbcTemplate jdbcTemplate, UserValidateDB userValidateDB) {
         this.jdbcTemplate = jdbcTemplate;
-        this.userValidateServiceDb = userValidateServiceDb;
+        this.userValidateDB = userValidateDB;
     }
 
     @Override
     public User getUser(Integer id) {
-        String sql = "select * from USERR where USER_ID = ?";
+        String sql = "select * from USERR where USER_ID = ?";                                                           //валидация юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
-        userValidateServiceDb.checkUserValidate(log, userRows, id);
-        User user = new User(
+        userValidateDB.checkUserValidate(log, userRows, id);
+        User user = new User(                                                                                           //метод
                 userRows.getInt("user_id"),
                 userRows.getString("email"),
                 userRows.getString("name"),
@@ -50,37 +50,43 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        String sql = "select * from USERR where USER_ID = ?";
+        String sql = "select * from USERR where USER_ID = ?";                                                           //валидация создания юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
-        userValidateServiceDb.checkCreateUserValidate(log, userRows, user);
-        sql = "insert into USERR(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";
+        userValidateDB.checkCreateUserValidate(log, userRows, user);
+        if (user.getName().trim().equals("")) {
+            user.setName(user.getLogin());
+        }
+        sql = "insert into USERR(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";                                    //метод
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getName(),
                 user.getLogin(),
                 user.getBirthday());
-        log.info("Добавлен новый пользователь, {}", user);
         sql = "select USER_ID from USERR where EMAIL = ?";
         SqlRowSet userRowsID = jdbcTemplate.queryForRowSet(sql, user.getEmail());
         userRowsID.next();
         user.setId(userRowsID.getInt("user_id"));
+        log.info("Добавлен новый пользователь {}", user);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        String sql= "select * from USERR where USER_ID = ?";
+        String sql= "select * from USERR where USER_ID = ?";                                                            //валидация юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
-        userValidateServiceDb.checkUserValidate(log, userRows, user.getId());
-        userValidateServiceDb.checkCreateUserValidate(log, userRows, user);
-        sql = "update USERR set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";
+        userValidateDB.checkUserValidate(log, userRows, user.getId());
+        userValidateDB.checkCreateUserValidate(log, userRows, user);                                                    //валидация создания юзеров
+        if (user.getName().trim().equals("")) {
+            user.setName(user.getLogin());
+        }
+        sql = "update USERR set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";                        //метод
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getName(),
                 user.getLogin(),
                 user.getBirthday(),
                 user.getId());
-        log.info("Пользователь обновлен - , {}", user);
+        log.info("Пользователь обновлен - {}", user);
         return user;
     }
 
