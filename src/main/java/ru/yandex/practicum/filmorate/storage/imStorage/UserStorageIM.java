@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.storage.storageInterfaces.UserStorage;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.validate.imValidate.UserValidateIM;
@@ -45,7 +46,7 @@ public class UserStorageIM implements UserStorage {
     @Override
     public User createUser(User user) {
         userValidateIM.checkCreateUserValidate(log, users, user);
-        if (user.getName().trim().equals("")) {
+        if (user.getName() == null || user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
         user.setId(userID);

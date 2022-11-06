@@ -55,13 +55,8 @@ public class FilmStorageDB implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sql = "select * from FILM";
-        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
-        for (int i = 0; i < films.size(); i++) {
-            films.get(i).setGenres(getSingleListGenre(films.get(i).getId()));
-        }
         log.info("Найдены фильмы");
-        return films;
+        return getListAllFilms();
     }
 
     @Override
@@ -168,6 +163,15 @@ public class FilmStorageDB implements FilmStorage {
         return genres;
     }
 
+    public List<Film> getListAllFilms() {
+        String sql = "select * from FILM";
+        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
+        for (int i = 0; i < films.size(); i++) {
+            films.get(i).setGenres(getSingleListGenre(films.get(i).getId()));
+        }
+        return films;
+    }
+
     private void addGenre(Film film) {
         for (int i = 0; i < film.getGenres().stream().distinct().count(); i++) {                                        //проверка на дубликаты жанров
             String sql = "insert into FILM_GENRE(FILM_ID, GENRE_ID) values (?, ?)";
@@ -177,7 +181,7 @@ public class FilmStorageDB implements FilmStorage {
         }
     }
 
-    private Film mapRowToFilm(ResultSet rs) throws SQLException {
+    public Film mapRowToFilm(ResultSet rs) throws SQLException {
         return Film.builder()
                 .id(rs.getInt("film_id"))
                 .name(rs.getString("name"))

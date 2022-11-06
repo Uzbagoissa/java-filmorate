@@ -35,12 +35,20 @@ public class FilmServiceDB implements FilmService {
     public List<Film> getMostPopularFilms(Integer count) {
         String sql = "select count(USER_ID) as COUNT, FILM_ID from FILM_USER_LIKE group by FILM_ID order by COUNT DESC limit ?";
         List<Integer> filmsId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("film_id"), count);
-        List<Film> films = new ArrayList<>();
+        List<Film> filmsPopular = new ArrayList<>();
         for (int i = 0; i < filmsId.size(); i++) {
-            films.add(getFilm(filmsId.get(i)));
+            filmsPopular.add(getFilm(filmsId.get(i)));
         }
+        /*int countFilmsNoLike = count - filmsId.size();                                                                  //докладываем список оставшимися фильмами без лайков
+        if (countFilmsNoLike > 0){
+            List<Film> filmsAll = filmStorageDB.getListAllFilms();
+            filmsAll.removeAll(filmsPopular);
+            for (int i = 0; i < countFilmsNoLike; i++) {
+                filmsPopular.add(filmsAll.get(i));
+            }
+        }*/
         log.info("Получен список самых популярных фильмов");
-        return films;
+        return filmsPopular;
     }
 
     @Override

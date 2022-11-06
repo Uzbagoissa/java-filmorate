@@ -53,7 +53,7 @@ public class UserStorageDB implements UserStorage {
         String sql = "select * from USERR where USER_ID = ?";                                                           //валидация создания юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
         userValidateDB.checkCreateUserValidate(log, userRows, user);
-        if (user.getName().trim().equals("")) {
+        if (user.getName() == null || user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
         sql = "insert into USERR(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";                                    //метод
@@ -76,7 +76,7 @@ public class UserStorageDB implements UserStorage {
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
         userValidateDB.checkUserValidate(log, userRows, user.getId());
         userValidateDB.checkCreateUserValidate(log, userRows, user);                                                    //валидация создания юзеров
-        if (user.getName().trim().equals("")) {
+        if (user.getName() == null || user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
         sql = "update USERR set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";                        //метод
