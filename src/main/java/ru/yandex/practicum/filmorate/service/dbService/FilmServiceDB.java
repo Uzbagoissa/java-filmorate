@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.serviceInterfaces.FilmService;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.dbStorage.FilmStorageDB;
@@ -22,13 +20,15 @@ import java.util.Objects;
 @Component
 public class FilmServiceDB implements FilmService {
     private final FilmValidateDB filmValidateDB;
+    private final FilmStorageDB filmStorageDB;
     private final UserValidateDB userValidateDB;
     private final Logger log = LoggerFactory.getLogger(UserStorageDB.class);
     private final JdbcTemplate jdbcTemplate;
 
-    public FilmServiceDB(JdbcTemplate jdbcTemplate, FilmValidateDB filmValidateDB, UserValidateDB userValidateDB) {
+    public FilmServiceDB(JdbcTemplate jdbcTemplate, FilmValidateDB filmValidateDB, FilmStorageDB filmStorageDB, UserValidateDB userValidateDB) {
         this.jdbcTemplate = jdbcTemplate;
         this.filmValidateDB = filmValidateDB;
+        this.filmStorageDB = filmStorageDB;
         this.userValidateDB = userValidateDB;
     }
     @Override
@@ -86,7 +86,9 @@ public class FilmServiceDB implements FilmService {
                 filmRows.getString("description"),
                 LocalDate.parse(Objects.requireNonNull(filmRows.getString("release_date"))),
                 filmRows.getInt("duration"),
-                filmRows.getInt("rate")
+                filmStorageDB.getSingleMPA(filmRows.getInt("mpa_id")),
+                filmRows.getInt("rate"),
+                filmStorageDB.getSingleListGenre(id)
         );
         return film;
     }
