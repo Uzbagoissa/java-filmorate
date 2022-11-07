@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.validate.dbValidate.FilmValidateDB;
 
-import javax.swing.*;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,9 +76,8 @@ public class FilmStorageDB implements FilmStorage {
             return ps;
         },keyHolder);
         film.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
-        addGenre(film);
         log.info("Добавлен новый фильм {}", film);
-        return film;
+        return addGenre(film);
     }
 
     @Override
@@ -100,9 +98,8 @@ public class FilmStorageDB implements FilmStorage {
                 film.getId());
         sql = "delete from FILM_GENRE where FILM_ID = ?";
         jdbcTemplate.update(sql, film.getId());
-        addGenre(film);
         log.info("Фильм обновлен - {}", film);
-        return film;
+        return addGenre(film);
     }
 
     @Override
@@ -172,13 +169,15 @@ public class FilmStorageDB implements FilmStorage {
         return films;
     }
 
-    private void addGenre(Film film) {
-        for (int i = 0; i < film.getGenres().stream().distinct().count(); i++) {                                        //проверка на дубликаты жанров
+    private Film addGenre(Film film) {
+        film.setGenres(film.getGenres().stream().distinct().collect(Collectors.toList()));                              //удаление дубликатов жанров
+        for (int i = 0; i < film.getGenres().stream().distinct().count(); i++) {
             String sql = "insert into FILM_GENRE(FILM_ID, GENRE_ID) values (?, ?)";
             jdbcTemplate.update(sql,
                     film.getId(),
                     film.getGenres().get(i).getId());
         }
+        return film;
     }
 
     public Film mapRowToFilm(ResultSet rs) throws SQLException {

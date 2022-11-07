@@ -29,7 +29,7 @@ public class UserServiceDB implements UserService {
     }
     @Override
     public List<User> getAllFriends(Integer id) {
-        String sql= "select * from USERR where USER_ID = ?";                                                            //валидация юзеров
+        String sql= "select * from USERS where USER_ID = ?";                                                            //валидация юзеров
         SqlRowSet idCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         userValidateDB.checkUserValidate(log, idCheckRows, id);
         sql = "select FRIEND_ID from FRIEND_STATUS where USER_ID = ?";                                                  //метод
@@ -44,7 +44,7 @@ public class UserServiceDB implements UserService {
 
     @Override
     public List<User> getCommonFriends(Integer id, Integer otherId) {
-        String sql= "select * from USERR where USER_ID = ?";                                                            //валидация юзеров
+        String sql= "select * from USERS where USER_ID = ?";                                                            //валидация юзеров
         SqlRowSet idCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         userValidateDB.checkUserValidate(log, idCheckRows, id);
         SqlRowSet friendIdCheckRows = jdbcTemplate.queryForRowSet(sql, otherId);
@@ -64,7 +64,7 @@ public class UserServiceDB implements UserService {
 
     @Override
     public User addFriend(Integer friendId, Integer id) {
-        String sql= "select * from USERR where USER_ID = ?";                                                            //валидация юзеров
+        String sql= "select * from USERS where USER_ID = ?";                                                            //валидация юзеров
         SqlRowSet idCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         userValidateDB.checkUserValidate(log, idCheckRows, id);
         SqlRowSet friendIdCheckRows = jdbcTemplate.queryForRowSet(sql, friendId);
@@ -74,15 +74,15 @@ public class UserServiceDB implements UserService {
         userValidateDB.checkAddFriendValidate(log, friendshipCheckRows, id, friendId);
         sql = "insert into FRIEND_STATUS(USER_ID, FRIEND_ID, STATUS) values (?, ?, FALSE)";                             //метод
         jdbcTemplate.update(sql,
-                id,
-                friendId);
+                friendId,
+                id);
         log.info("Пользователь {} теперь в друзьях пользователя {}", friendId, id);
         return getUser(friendId);
     }
 
     @Override
     public User removeFriend(Integer id, Integer friendId) {
-        String sql= "select * from USERR where USER_ID = ?";                                                            //валидация юзеров
+        String sql= "select * from USERS where USER_ID = ?";                                                            //валидация юзеров
         SqlRowSet idCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         userValidateDB.checkUserValidate(log, idCheckRows, id);
         SqlRowSet friendIdCheckRows = jdbcTemplate.queryForRowSet(sql, friendId);
@@ -98,7 +98,7 @@ public class UserServiceDB implements UserService {
     }
 
     private User getUser(Integer id) {
-        String sql = "select * from USERR where USER_ID = ?";
+        String sql = "select * from USERS where USER_ID = ?";
         SqlRowSet friendRows = jdbcTemplate.queryForRowSet(sql, id);
         friendRows.next();
         User user = new User(

@@ -27,7 +27,7 @@ public class UserStorageDB implements UserStorage {
 
     @Override
     public User getUser(Integer id) {
-        String sql = "select * from USERR where USER_ID = ?";                                                           //валидация юзеров
+        String sql = "select * from USERS where USER_ID = ?";                                                           //валидация юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
         userValidateDB.checkUserValidate(log, userRows, id);
         User user = new User(                                                                                           //метод
@@ -43,26 +43,26 @@ public class UserStorageDB implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        String sql = "select * from USERR";
+        String sql = "select * from USERS";
         log.info("Найдены пользователи");
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToUser(rs));
     }
 
     @Override
     public User createUser(User user) {
-        String sql = "select * from USERR where USER_ID = ?";                                                           //валидация создания юзеров
+        String sql = "select * from USERS where USER_ID = ?";                                                           //валидация создания юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
         userValidateDB.checkCreateUserValidate(log, userRows, user);
         if (user.getName() == null || user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
-        sql = "insert into USERR(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";                                    //метод
+        sql = "insert into USERS(EMAIL, NAME, LOGIN, BIRTHDAY) values (?, ?, ?, ?)";                                    //метод
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getName(),
                 user.getLogin(),
                 user.getBirthday());
-        sql = "select USER_ID from USERR where EMAIL = ?";
+        sql = "select USER_ID from USERS where EMAIL = ?";
         SqlRowSet userRowsID = jdbcTemplate.queryForRowSet(sql, user.getEmail());
         userRowsID.next();
         user.setId(userRowsID.getInt("user_id"));
@@ -72,14 +72,14 @@ public class UserStorageDB implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sql= "select * from USERR where USER_ID = ?";                                                            //валидация юзеров
+        String sql= "select * from USERS where USER_ID = ?";                                                            //валидация юзеров
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, user.getId());
         userValidateDB.checkUserValidate(log, userRows, user.getId());
         userValidateDB.checkCreateUserValidate(log, userRows, user);                                                    //валидация создания юзеров
         if (user.getName() == null || user.getName().trim().equals("")) {
             user.setName(user.getLogin());
         }
-        sql = "update USERR set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";                        //метод
+        sql = "update USERS set EMAIL = ?, NAME = ?, LOGIN = ?, BIRTHDAY = ? where USER_ID = ?";                        //метод
         jdbcTemplate.update(sql,
                 user.getEmail(),
                 user.getName(),

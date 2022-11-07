@@ -32,21 +32,24 @@ public class FilmServiceDB implements FilmService {
         this.userValidateDB = userValidateDB;
     }
     @Override
-    public List<Film> getMostPopularFilms(Integer count) {
+    public List<Film> getMostPopularFilms(Integer countPopFilms) {
         String sql = "select count(USER_ID) as COUNT, FILM_ID from FILM_USER_LIKE group by FILM_ID order by COUNT DESC limit ?";
-        List<Integer> filmsId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("film_id"), count);
+        List<Integer> filmsIdLike = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("film_id"), countPopFilms);
+        List<Film> filmsAll = filmStorageDB.getListAllFilms();
         List<Film> filmsPopular = new ArrayList<>();
-        for (int i = 0; i < filmsId.size(); i++) {
-            filmsPopular.add(getFilm(filmsId.get(i)));
-        }
-        /*int countFilmsNoLike = count - filmsId.size();                                                                  //докладываем список оставшимися фильмами без лайков
-        if (countFilmsNoLike > 0){
-            List<Film> filmsAll = filmStorageDB.getListAllFilms();
+        if (countPopFilms - filmsIdLike.size() > 0 && countPopFilms - filmsIdLike.size() <= filmsAll.size()){
             filmsAll.removeAll(filmsPopular);
-            for (int i = 0; i < countFilmsNoLike; i++) {
+            for (int i = 0; i < countPopFilms - filmsIdLike.size(); i++) {
                 filmsPopular.add(filmsAll.get(i));
             }
-        }*/
+        } else if (countPopFilms - filmsIdLike.size() > 0 && countPopFilms - filmsIdLike.size() > filmsAll.size()){
+            filmsAll.removeAll(filmsPopular);
+            filmsPopular.addAll(filmsAll);
+        } else if (countPopFilms - filmsIdLike.size() <= 0){
+            for (int i = 0; i < filmsIdLike.size(); i++) {
+                filmsPopular.add(getFilm(filmsIdLike.get(i)));
+            }
+        }
         log.info("Получен список самых популярных фильмов");
         return filmsPopular;
     }
@@ -56,7 +59,7 @@ public class FilmServiceDB implements FilmService {
         String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
         SqlRowSet filmCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         filmValidateDB.checkFilmValidate(log, filmCheckRows, id);
-        sql= "select * from USERR where USER_ID = ?";                                                                   //валидация юзеров
+        sql= "select * from USERS where USER_ID = ?";                                                                   //валидация юзеров
         SqlRowSet idCheckRows = jdbcTemplate.queryForRowSet(sql, userId);
         userValidateDB.checkUserValidate(log, idCheckRows, userId);
         sql= "select FILM_ID from FILM_USER_LIKE where USER_ID = ? and FILM_ID = ?";                                    //валидация лайка
@@ -75,7 +78,7 @@ public class FilmServiceDB implements FilmService {
         String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
         SqlRowSet filmCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         filmValidateDB.checkFilmValidate(log, filmCheckRows, id);
-        sql= "select * from USERR where USER_ID = ?";                                                                   //валидация юзеров
+        sql= "select * from USERS where USER_ID = ?";                                                                   //валидация юзеров
         SqlRowSet idCheckRows = jdbcTemplate.queryForRowSet(sql, userId);
         userValidateDB.checkUserValidate(log, idCheckRows, userId);
         sql = "delete from FILM_USER_LIKE where FILM_ID = ? and USER_ID = ?";                                           //метод

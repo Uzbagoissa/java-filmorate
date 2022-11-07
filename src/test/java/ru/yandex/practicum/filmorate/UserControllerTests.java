@@ -1,12 +1,12 @@
-package src.test.java.ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserValidateServiceStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.imStorage.UserStorageIM;
+import ru.yandex.practicum.filmorate.validate.imValidate.UserValidateIM;
 
 import java.time.LocalDate;
 
@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class UserControllerTests {
     User user = new User();
-    UserValidateServiceStorage userValidateServiceStorage = new UserValidateServiceStorage();
-    InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage(userValidateServiceStorage);
+    UserValidateIM userValidateIM = new UserValidateIM();
+    UserStorageIM userStorageIM = new UserStorageIM(userValidateIM);
 
     @BeforeEach
     public void beforeEach() {
@@ -28,8 +28,8 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2000-01-12"));
         user.setLogin("VACE");
         user.setEmail("vace@yandex.ru");
-        inMemoryUserStorage.createUser(user);
-        assertThrows(ValidationException.class, () -> inMemoryUserStorage.createUser(user));
+        userStorageIM.createUser(user);
+        assertThrows(ValidationException.class, () -> userStorageIM.createUser(user));
     }
 
     @Test
@@ -37,7 +37,7 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2000-01-12"));
         user.setLogin("VACE");
         user.setEmail("");
-        assertThrows(ValidationException.class, () -> inMemoryUserStorage.createUser(user));
+        assertThrows(ValidationException.class, () -> userStorageIM.createUser(user));
     }
 
     @Test
@@ -45,7 +45,7 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2000-01-12"));
         user.setLogin("  ");
         user.setEmail("vace@yandex.ru");
-        assertThrows(ValidationException.class, () -> inMemoryUserStorage.createUser(user));
+        assertThrows(ValidationException.class, () -> userStorageIM.createUser(user));
     }
 
     @Test
@@ -53,12 +53,12 @@ class UserControllerTests {
         user.setBirthday(LocalDate.parse("2200-01-12"));
         user.setLogin("VACE");
         user.setEmail("vace@yandex.ru");
-        assertThrows(ValidationException.class, () -> inMemoryUserStorage.createUser(user));
+        assertThrows(ValidationException.class, () -> userStorageIM.createUser(user));
     }
 
     @Test
     void getInvalidUserException() {
-        assertThrows(NotFoundException.class, () -> inMemoryUserStorage.updateUser(user));
+        assertThrows(NotFoundException.class, () -> userStorageIM.updateUser(user));
     }
 
 }
