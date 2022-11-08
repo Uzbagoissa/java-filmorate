@@ -152,7 +152,7 @@ public class FilmStorageDB implements FilmStorage {
 
     public List<Genre> getSingleListGenre(Integer filmId) {                                                             //отдельным методом, т.к. задействован в нескольких местах
         String sql = "select GENRE_ID from FILM_GENRE where FILM_ID = ?";
-        List<Integer> genresId = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToGenreId(rs), filmId);
+        List<Integer> genresId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("genre_id"), filmId);
         List<Genre> genres = new ArrayList<>();
         for (int i = 0; i < genresId.size(); i++) {
             genres.add(getSingleGenre(genresId.get(i)));
@@ -197,10 +197,6 @@ public class FilmStorageDB implements FilmStorage {
                 .id(rs.getInt("genre_id"))
                 .name(rs.getString("name"))
                 .build();
-    }
-
-    private Integer mapRowToGenreId(ResultSet rs) throws SQLException {
-        return rs.getInt("genre_id");
     }
 
     private Mpa mapRowToRatingMPA(ResultSet rs) throws SQLException {

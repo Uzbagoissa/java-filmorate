@@ -33,7 +33,7 @@ public class FilmServiceDB implements FilmService {
     }
     @Override
     public List<Film> getMostPopularFilms(Integer countPopFilms) {
-        String sql = "select count(USER_ID) as COUNT, FILM_ID from FILM_USER_LIKE group by FILM_ID order by COUNT DESC limit ?";
+        String sql = "select count(USER_ID) as COUNT, FILM_ID from FILM_USER_LIKE group by FILM_ID order by COUNT limit ?";
         List<Integer> filmsIdLike = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("film_id"), countPopFilms);
         List<Film> filmsAll = filmStorageDB.getListAllFilms();
         List<Film> filmsPopular = new ArrayList<>();
