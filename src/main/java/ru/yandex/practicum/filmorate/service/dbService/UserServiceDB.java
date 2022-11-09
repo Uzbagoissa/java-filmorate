@@ -35,8 +35,8 @@ public class UserServiceDB implements UserService {
         sql = "select FRIEND_ID from FRIEND_STATUS where USER_ID = ?";                                                  //метод
         List<Integer> friendsId = jdbcTemplate.query(sql, (rs, rowNum) -> getFriendId(rs), id);
         List<User> friends = new ArrayList<>();
-        for (int i = 0; i < friendsId.size(); i++) {
-            friends.add(getUser(friendsId.get(i)));
+        for (Integer integer : friendsId) {
+            friends.add(getUser(integer));
         }
         log.info("Получен список друзей пользователя {}", id);
         return friends;
@@ -53,9 +53,9 @@ public class UserServiceDB implements UserService {
         List<Integer> friendsId = jdbcTemplate.query(sql, (rs, rowNum) -> getFriendId(rs), id);
         List<Integer> friendsOtherId = jdbcTemplate.query(sql, (rs, rowNum) -> getFriendId(rs), otherId);
         List<User> commonFriends = new ArrayList<>();
-        for (int i = 0; i < friendsId.size(); i++) {
-            if (friendsOtherId.contains(friendsId.get(i))){
-                commonFriends.add(getUser(friendsId.get(i)));
+        for (Integer integer : friendsId) {
+            if (friendsOtherId.contains(integer)) {
+                commonFriends.add(getUser(integer));
             }
         }
         log.info("Получен список общих друзей пользователей {} и {}", id, otherId);
@@ -101,13 +101,12 @@ public class UserServiceDB implements UserService {
         String sql = "select * from USERS where USER_ID = ?";
         SqlRowSet friendRows = jdbcTemplate.queryForRowSet(sql, id);
         friendRows.next();
-        User user = new User(
+        return new User(
                 friendRows.getInt("user_id"),
                 friendRows.getString("email"),
                 friendRows.getString("name"),
                 friendRows.getString("login"),
                 LocalDate.parse(Objects.requireNonNull(friendRows.getString("birthday")))
         );
-        return user;
     }
 }

@@ -46,8 +46,8 @@ public class FilmServiceDB implements FilmService {
             filmsAll.removeAll(filmsPopular);
             filmsPopular.addAll(filmsAll);
         } else if (countPopFilms - filmsIdLike.size() <= 0){
-            for (int i = 0; i < filmsIdLike.size(); i++) {
-                filmsPopular.add(getFilm(filmsIdLike.get(i)));
+            for (Integer integer : filmsIdLike) {
+                filmsPopular.add(getFilm(integer));
             }
         }
         log.info("Получен список самых популярных фильмов");
@@ -56,7 +56,7 @@ public class FilmServiceDB implements FilmService {
 
     @Override
     public Film addLike(Integer id, Integer userId) {
-        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
+        String sql = "select * from FILMS where FILM_ID = ?";                                                            //валидация фильма
         SqlRowSet filmCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         filmValidateDB.checkFilmValidate(log, filmCheckRows, id);
         sql= "select * from USERS where USER_ID = ?";                                                                   //валидация юзеров
@@ -75,7 +75,7 @@ public class FilmServiceDB implements FilmService {
 
     @Override
     public Film removeLike(Integer id, Integer userId) {
-        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
+        String sql = "select * from FILMS where FILM_ID = ?";                                                            //валидация фильма
         SqlRowSet filmCheckRows = jdbcTemplate.queryForRowSet(sql, id);
         filmValidateDB.checkFilmValidate(log, filmCheckRows, id);
         sql= "select * from USERS where USER_ID = ?";                                                                   //валидация юзеров
@@ -88,10 +88,10 @@ public class FilmServiceDB implements FilmService {
     }
 
     private Film getFilm(Integer id) {
-        String sql = "select * from FILM where FILM_ID = ?";
+        String sql = "select * from FILMS where FILM_ID = ?";
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, id);
         filmRows.next();
-        Film film = new Film(
+        return new Film(
                 filmRows.getInt("film_id"),
                 filmRows.getString("name"),
                 filmRows.getString("description"),
@@ -101,7 +101,6 @@ public class FilmServiceDB implements FilmService {
                 filmRows.getInt("rate"),
                 filmStorageDB.getSingleListGenre(id)
         );
-        return film;
     }
 
 }

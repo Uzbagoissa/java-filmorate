@@ -35,7 +35,7 @@ public class FilmStorageDB implements FilmStorage {
 
     @Override
     public Film getFilm(Integer id) {
-        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
+        String sql = "select * from FILMS where FILM_ID = ?";                                                           //валидация фильма
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, id);
         filmValidateDB.checkFilmValidate(log, filmRows, id);
         Film film = new Film(                                                                                           //метод
@@ -60,10 +60,10 @@ public class FilmStorageDB implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация создания фильма
+        String sql = "select * from FILMS where FILM_ID = ?";                                                           //валидация создания фильма
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, film.getId());
         filmValidateDB.checkAddFilmValidate(log, filmRows, film);
-        String sqlq = "insert into FILM(NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID, RATE) values ( ?, ?, ?, ?, ?, ? )";  //метод
+        String sqlq = "insert into FILMS(NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID, RATE) values ( ?, ?, ?, ?, ?, ? )";//метод
         KeyHolder keyHolder = new GeneratedKeyHolder();                                                                 //задали айдишник фильму
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sqlq, Statement.RETURN_GENERATED_KEYS);
@@ -82,11 +82,11 @@ public class FilmStorageDB implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        String sql = "select * from FILM where FILM_ID = ?";                                                            //валидация фильма
+        String sql = "select * from FILMS where FILM_ID = ?";                                                           //валидация фильма
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, film.getId());
         filmValidateDB.checkFilmValidate(log, filmRows, film.getId());
         filmValidateDB.checkAddFilmValidate(log, filmRows, film);                                                       //валидация создания фильма
-        sql = "update FILM set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ?, RATE = ? " +       //метод
+        sql = "update FILMS set NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, MPA_ID = ?, RATE = ? " +     //метод
                 "where FILM_ID = ?";
         jdbcTemplate.update(sql,
                 film.getName(),
@@ -132,39 +132,37 @@ public class FilmStorageDB implements FilmStorage {
         String sql = "select * from MPA where MPA_ID = ?";                                                              //валидация рейтинга
         SqlRowSet ratingMPARows = jdbcTemplate.queryForRowSet(sql, mpaId);
         filmValidateDB.checkRatingMPAValidate(log, ratingMPARows, mpaId);
-        Mpa mpa = new Mpa(                                                                                              //метод
+        return new Mpa(                                                                                                 //метод
                 ratingMPARows.getInt("mpa_id"),
                 ratingMPARows.getString("name")
         );
-        return mpa;
     }
 
     public Genre getSingleGenre(Integer genreId) {                                                                      //отдельным методом, т.к. задействован в нескольких местах
         String sql = "select * from GENRE where GENRE_ID = ?";                                                          //валидация жанра
         SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sql, genreId);
         filmValidateDB.checkGenreValidate(log, genreRows, genreId);
-        Genre genre = new Genre(                                                                                        //метод
+        return new Genre(                                                                                               //метод
                 genreRows.getInt("genre_id"),
                 genreRows.getString("name")
         );
-        return genre;
     }
 
     public List<Genre> getSingleListGenre(Integer filmId) {                                                             //отдельным методом, т.к. задействован в нескольких местах
         String sql = "select GENRE_ID from FILM_GENRE where FILM_ID = ?";
         List<Integer> genresId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("genre_id"), filmId);
         List<Genre> genres = new ArrayList<>();
-        for (int i = 0; i < genresId.size(); i++) {
-            genres.add(getSingleGenre(genresId.get(i)));
+        for (Integer integer : genresId) {
+            genres.add(getSingleGenre(integer));
         }
         return genres;
     }
 
     public List<Film> getListAllFilms() {
-        String sql = "select * from FILM";
+        String sql = "select * from FILMS";
         List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
-        for (int i = 0; i < films.size(); i++) {
-            films.get(i).setGenres(getSingleListGenre(films.get(i).getId()));
+        for (Film film : films) {
+            film.setGenres(getSingleListGenre(film.getId()));
         }
         return films;
     }

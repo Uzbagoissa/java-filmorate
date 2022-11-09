@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.validate.imValidate;
 
 import org.slf4j.Logger;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;

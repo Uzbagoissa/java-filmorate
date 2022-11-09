@@ -2,17 +2,13 @@ package ru.yandex.practicum.filmorate;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.dbService.FilmServiceDB;
 import ru.yandex.practicum.filmorate.service.dbService.UserServiceDB;
-import ru.yandex.practicum.filmorate.storage.dbStorage.FilmStorageDB;
 import ru.yandex.practicum.filmorate.storage.dbStorage.UserStorageDB;
 
 import java.time.LocalDate;
@@ -27,9 +23,9 @@ class UserControllerDbTests {
 	private final UserStorageDB userStorageDB;
 	private final UserServiceDB userServiceDB;
 	private final JdbcTemplate jdbcTemplate;
-	User user1 = new User(1, "ssf@yandex.ru", "name1", "login1", LocalDate.parse("1987-01-12"));
-	User user2 = new User(2, "ssf@yandex.ru", "name2", "login2", LocalDate.parse("1987-01-12"));
-	User user3 = new User(3, "ssf@yandex.ru", "name3", "login3", LocalDate.parse("1987-01-12"));
+	private final User user1 = new User(1, "ssf@yandex.ru", "name1", "login1", LocalDate.parse("1987-01-12"));
+	private final User user2 = new User(2, "ssf@yandex.ru", "name2", "login2", LocalDate.parse("1987-01-12"));
+	private final User user3 = new User(3, "ssf@yandex.ru", "name3", "login3", LocalDate.parse("1987-01-12"));
 
 	@Test
 	void testCreateUser() {
@@ -95,15 +91,15 @@ class UserControllerDbTests {
 		assertEquals(userServiceDB.getCommonFriends(user1.getId(), user3.getId()), List.of(user2));
 	}
 
-	@AfterEach
+	@AfterEach																											//чистим таблицы для проверок постманом
 	void tearDown() {
 		jdbcTemplate.update("DELETE FROM FILM_USER_LIKE");
 		jdbcTemplate.update("DELETE FROM FILM_GENRE");
 		jdbcTemplate.update("DELETE FROM FRIEND_STATUS");
 		jdbcTemplate.update("DELETE FROM USERS");
-		jdbcTemplate.update("DELETE FROM FILM");
+		jdbcTemplate.update("DELETE FROM FILMS");
 		jdbcTemplate.update("ALTER TABLE USERS ALTER COLUMN USER_ID RESTART WITH 1");
-		jdbcTemplate.update("ALTER TABLE FILM ALTER COLUMN FILM_ID RESTART WITH 1");
+		jdbcTemplate.update("ALTER TABLE FILMS ALTER COLUMN FILM_ID RESTART WITH 1");
 		jdbcTemplate.update("ALTER TABLE FILM_GENRE ALTER COLUMN FILM_GENRE_ID RESTART WITH 1");
 		jdbcTemplate.update("ALTER TABLE FILM_USER_LIKE ALTER COLUMN LIKE_ID RESTART WITH 1");
 		jdbcTemplate.update("ALTER TABLE FRIEND_STATUS ALTER COLUMN FRIEND_STATUS_ID RESTART WITH 1");

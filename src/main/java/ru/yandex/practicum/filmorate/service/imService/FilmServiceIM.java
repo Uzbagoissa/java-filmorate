@@ -39,7 +39,7 @@ public class FilmServiceIM implements FilmService, Comparator<Film> {
     @Override
     public List<Film> getMostPopularFilms (Integer count) {
         return filmStorage.getFilms().values().stream()
-                .sorted(this::compare)
+                .sorted(this)
                 .limit(count)
                 .collect(Collectors.toList());
     }
@@ -64,7 +64,6 @@ public class FilmServiceIM implements FilmService, Comparator<Film> {
 
     @Override
     public int compare(Film f0, Film f1) {
-        int result = Integer.compare(f1.getLikes().size(), f0.getLikes().size());
-        return result;
+        return Integer.compare(f1.getLikes().size(), f0.getLikes().size());
     }
 }
