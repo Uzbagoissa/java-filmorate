@@ -44,7 +44,7 @@ public class FilmStorageDB implements FilmStorage {
                 filmRows.getString("description"),
                 LocalDate.parse(Objects.requireNonNull(filmRows.getString("release_date"))),
                 filmRows.getInt("duration"),
-                getSingleMPA(filmRows.getInt("mpa_id")),
+                getMPA(filmRows.getInt("mpa_id")),
                 filmRows.getInt("rate"),
                 getSingleListGenre(id)
         );
@@ -54,8 +54,13 @@ public class FilmStorageDB implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
+        String sql = "select * from FILMS";
+        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
+        for (Film film : films) {
+            film.setGenres(getSingleListGenre(film.getId()));
+        }
         log.info("Найдены фильмы");
-        return getListAllFilms();
+        return films;
     }
 
     @Override
@@ -111,14 +116,26 @@ public class FilmStorageDB implements FilmStorage {
 
     @Override
     public Genre getGenre(Integer genreId) {
+        String sql = "select * from GENRE where GENRE_ID = ?";                                                          //валидация жанра
+        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sql, genreId);
+        filmValidateDB.checkGenreValidate(log, genreRows, genreId);
         log.info("Найден жанр");
-        return getSingleGenre(genreId);
+        return new Genre(                                                                                               //метод
+                genreRows.getInt("genre_id"),
+                genreRows.getString("name")
+        );
     }
 
     @Override
     public Mpa getMPA(Integer mpaId) {
+        String sql = "select * from MPA where MPA_ID = ?";                                                              //валидация рейтинга
+        SqlRowSet ratingMPARows = jdbcTemplate.queryForRowSet(sql, mpaId);
+        filmValidateDB.checkRatingMPAValidate(log, ratingMPARows, mpaId);
         log.info("Найден рейтинг");
-        return getSingleMPA(mpaId);
+        return new Mpa(                                                                                                 //метод
+                ratingMPARows.getInt("mpa_id"),
+                ratingMPARows.getString("name")
+        );
     }
 
     @Override
@@ -128,43 +145,14 @@ public class FilmStorageDB implements FilmStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToRatingMPA(rs));
     }
 
-    public Mpa getSingleMPA(Integer mpaId) {                                                                            //отдельным методом, т.к. задействован в нескольких местах
-        String sql = "select * from MPA where MPA_ID = ?";                                                              //валидация рейтинга
-        SqlRowSet ratingMPARows = jdbcTemplate.queryForRowSet(sql, mpaId);
-        filmValidateDB.checkRatingMPAValidate(log, ratingMPARows, mpaId);
-        return new Mpa(                                                                                                 //метод
-                ratingMPARows.getInt("mpa_id"),
-                ratingMPARows.getString("name")
-        );
-    }
-
-    public Genre getSingleGenre(Integer genreId) {                                                                      //отдельным методом, т.к. задействован в нескольких местах
-        String sql = "select * from GENRE where GENRE_ID = ?";                                                          //валидация жанра
-        SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sql, genreId);
-        filmValidateDB.checkGenreValidate(log, genreRows, genreId);
-        return new Genre(                                                                                               //метод
-                genreRows.getInt("genre_id"),
-                genreRows.getString("name")
-        );
-    }
-
-    public List<Genre> getSingleListGenre(Integer filmId) {                                                             //отдельным методом, т.к. задействован в нескольких местах
+    private List<Genre> getSingleListGenre(Integer filmId) {                                                             //отдельным методом, т.к. задействован в нескольких местах
         String sql = "select GENRE_ID from FILM_GENRE where FILM_ID = ?";
         List<Integer> genresId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("genre_id"), filmId);
         List<Genre> genres = new ArrayList<>();
         for (Integer integer : genresId) {
-            genres.add(getSingleGenre(integer));
+            genres.add(getGenre(integer));
         }
         return genres;
-    }
-
-    public List<Film> getListAllFilms() {
-        String sql = "select * from FILMS";
-        List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> mapRowToFilm(rs));
-        for (Film film : films) {
-            film.setGenres(getSingleListGenre(film.getId()));
-        }
-        return films;
     }
 
     private Film addGenre(Film film) {
@@ -178,14 +166,14 @@ public class FilmStorageDB implements FilmStorage {
         return film;
     }
 
-    public Film mapRowToFilm(ResultSet rs) throws SQLException {
+    private Film mapRowToFilm(ResultSet rs) throws SQLException {
         return Film.builder()
                 .id(rs.getInt("film_id"))
                 .name(rs.getString("name"))
                 .description(rs.getString("description"))
                 .releaseDate(LocalDate.parse(Objects.requireNonNull(rs.getString("release_date"))))
                 .duration(rs.getInt("duration"))
-                .mpa(getSingleMPA(rs.getInt("mpa_id")))
+                .mpa(getMPA(rs.getInt("mpa_id")))
                 .rate(rs.getInt("rate"))
                 .build();
     }

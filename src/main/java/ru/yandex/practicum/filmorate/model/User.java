@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class User {
     private int id;
     private String email;
@@ -23,8 +24,5 @@ public class User {
         this.name = name;
         this.login = login;
         this.birthday = birthday;
-    }
-
-    public User() {
     }
 }

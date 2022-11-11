@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.serviceInterfaces.FilmService;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.dbStorage.FilmStorageDB;
@@ -35,7 +36,7 @@ public class FilmServiceDB implements FilmService {
     public List<Film> getMostPopularFilms(Integer countPopFilms) {
         String sql = "select count(USER_ID) as COUNT, FILM_ID from FILM_USER_LIKE group by FILM_ID order by COUNT limit ?";
         List<Integer> filmsIdLike = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("film_id"), countPopFilms);
-        List<Film> filmsAll = filmStorageDB.getListAllFilms();
+        List<Film> filmsAll = filmStorageDB.getAllFilms();
         List<Film> filmsPopular = new ArrayList<>();
         if (countPopFilms - filmsIdLike.size() > 0 && countPopFilms - filmsIdLike.size() <= filmsAll.size()){
             filmsAll.removeAll(filmsPopular);
@@ -97,10 +98,20 @@ public class FilmServiceDB implements FilmService {
                 filmRows.getString("description"),
                 LocalDate.parse(Objects.requireNonNull(filmRows.getString("release_date"))),
                 filmRows.getInt("duration"),
-                filmStorageDB.getSingleMPA(filmRows.getInt("mpa_id")),
+                filmStorageDB.getMPA(filmRows.getInt("mpa_id")),
                 filmRows.getInt("rate"),
-                filmStorageDB.getSingleListGenre(id)
+                getSingleListGenre(id)
         );
+    }
+
+    private List<Genre> getSingleListGenre(Integer filmId) {                                                             //отдельным методом, т.к. задействован в нескольких местах
+        String sql = "select GENRE_ID from FILM_GENRE where FILM_ID = ?";
+        List<Integer> genresId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("genre_id"), filmId);
+        List<Genre> genres = new ArrayList<>();
+        for (Integer integer : genresId) {
+            genres.add(filmStorageDB.getGenre(integer));
+        }
+        return genres;
     }
 
 }
