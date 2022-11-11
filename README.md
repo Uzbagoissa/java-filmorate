@@ -1,6 +1,6 @@
 # java-filmorate
 
-![](pictures/BD.bmp)
+![](pictures/BD.png)
 
 ## **Таблица FILMS:**
 
