@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class Genre {
-    private int id;
-    private String name;
+public class Status {
+    private boolean status;
 }

@@ -1,13 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.service.serviceInterfaces.UserService;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.interfaces.UserStorage;
+import ru.yandex.practicum.filmorate.storage.storageInterfaces.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,12 +17,12 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserStorage userStorage, UserService userService) {
+    public UserController(@Qualifier("userStorageDB") UserStorage userStorage, @Qualifier("userServiceDB") UserService userService) {
         this.userStorage = userStorage;
         this.userService = userService;
     }
     @GetMapping()
-    public ArrayList<User> getAllUsers() {
+    public List<User> getAllUsers() {
         return userStorage.getAllUsers();
     }
 
